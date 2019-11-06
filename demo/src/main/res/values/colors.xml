@@ -8,4 +8,8 @@
     <color name="color_0B8FFE">#0B8FFE</color>
 
 
+
+    <color name="bottom_navigation_unselected">#515151</color>
+    <color name="bottom_navigation_selected">@color/color_0B8FFE</color>
+
 </resources>

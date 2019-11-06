@@ -43,6 +43,7 @@ public class MessengerService extends BaseService {
             switch (msg.what) {
                 case MSG_SAY_HELLO:
                     //获取messenger对象
+                    //使用 message获取消息 ,用messenger发送消息
                     Messenger messenger = msg.replyTo;
                     Message replyMsg =  Message.obtain(null,MessengerService.MSG_SAY_HELLO,0,0);
                     Bundle bundle = new Bundle();

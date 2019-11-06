@@ -25,28 +25,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.jessyan.mvparms.demo.R;
+import me.jessyan.mvparms.demo.app.base.BaseSupportActivity;
 import me.jessyan.mvparms.demo.app.service.DemoService;
 import me.jessyan.mvparms.demo.app.service.MessengerService;
 import me.jessyan.mvparms.demo.app.service.MyService;
+import me.jessyan.mvparms.demo.mvp.ui.fragment.DeviceFragment;
+import me.jessyan.mvparms.demo.mvp.ui.fragment.HomeFragment;
+import me.jessyan.mvparms.demo.mvp.ui.fragment.PersenFragment;
+import me.jessyan.mvparms.demo.mvp.ui.fragment.VideoFragment;
+import me.jessyan.mvparms.demo.mvp.ui.fragment.WorkFragment;
+import me.jessyan.mvparms.demo.mvp.ui.widget.bottombar.BottomBar;
+import me.jessyan.mvparms.demo.mvp.ui.widget.bottombar.BottomBarTab;
+import me.yokeyword.fragmentation.ISupportFragment;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseSupportActivity {
 
-    @BindView(R.id.bt_make)
-    Button btMake;
-    @BindView(R.id.bt_bind)
-    Button btBind;
-    @BindView(R.id.bt_unbind)
-    Button btUnbind;
-    @BindView(R.id.bt_messenger)
-    Button btMessenger;
-    @BindView(R.id.bt_send_messenger)
-    Button btSendMessenger;
-    //判断服务是否已经解绑
-    boolean mBound = false;
+    @BindView(R.id.bottom_bar)
+    BottomBar mBottomBar;
 
-    //与服务交互的messenger
-    private Messenger mService = null;
+    private BottomBarTab homeTab;
+    private BottomBarTab categoryTab;
+    private BottomBarTab cartTab;
+    private BottomBarTab findTab;
+    private BottomBarTab selfTab;
 
+    private ISupportFragment[] mFragments = new ISupportFragment[5];
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -60,133 +63,57 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        btMake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //则线图
-                //启动服务类型
-                Intent intent = new Intent(MainActivity.this, DemoService.class);
-                startService(intent);
+        initBottomBar();
+    }
 
+    /**
+     * 底部状态栏
+     */
+    private void initBottomBar() {
+        ISupportFragment recommendFragment = findFragment(HomeFragment.class);
+        if (recommendFragment == null) {
+            mFragments[0] = new HomeFragment();
+            mFragments[1] = new WorkFragment();
+            mFragments[2] = new DeviceFragment();
+            mFragments[3] = new VideoFragment();
+            mFragments[4] = new PersenFragment();
+            loadMultipleRootFragment(R.id.fragment_contain, 0, mFragments);
+        } else {
+            mFragments[0] = findFragment(HomeFragment.class);
+            mFragments[1] = findFragment(WorkFragment.class);
+            mFragments[2] = findFragment(DeviceFragment.class);
+            mFragments[3] = findFragment(VideoFragment.class);
+            mFragments[4] = findFragment(PersenFragment.class);
+        }
+
+
+        homeTab = new BottomBarTab(mContext, R.mipmap.icon_navigation_home, "首页");
+        categoryTab = new BottomBarTab(mContext, R.mipmap.icon_navigation_category, "工单");
+        cartTab = new BottomBarTab(mContext, R.mipmap.icon_navigation_cart, "设备");
+        findTab = new BottomBarTab(mContext, R.mipmap.icon_navigation_find, "视频");
+        selfTab = new BottomBarTab(mContext, R.mipmap.icon_navigation_self, "个人");
+        mBottomBar
+                .addItem(homeTab)
+                .addItem(categoryTab)
+                .addItem(cartTab)
+                .addItem(findTab)
+                .addItem(selfTab);
+        mBottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position, int prePosition) {
+                showHideFragment(mFragments[position], mFragments[prePosition]);
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(int position) {
 
             }
         });
 
-
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mBound) {
-            unbindService(serviceConnection);
-            mBound = false;
-        }
-
-    }
-
-    @OnClick({R.id.bt_bind, R.id.bt_unbind, R.id.bt_messenger,R.id.bt_send_messenger})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.bt_bind:
-                Intent intent = new Intent(MainActivity.this, MyService.class);
-                bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
-
-                break;
-            case R.id.bt_unbind:
-                if (mBound) {
-                    unbindService(serviceConnection);
-
-                    mBound = false;
-                }
-                break;
-            case R.id.bt_messenger:
-                Intent intentt = new Intent(MainActivity.this, MessengerService.class);
-                bindService(intentt, messengerCon, Service.BIND_AUTO_CREATE);
-                mBound = true;
-                break;
-            case R.id.bt_send_messenger:
-                sendMessage(view);
-                break;
-            default:
-        }
-    }
-
-
-    /**
-     * 客户端通知服务端去发送消息
-     * @param view
-     */
-    private void sendMessage(View view) {
-        if (!mBound) return;
-        //创建于服务交互的消息实体
-        Message obtain = Message.obtain(null,MessengerService.MSG_SAY_HELLO,0,0);
-        obtain.replyTo = mReceiveReplyMsg;
-        try {
-            mService.send(obtain);
-            LogUtils.debugInfo("MessengerService","发送消息");
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *bind服务测试
-     */
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MyService.MyLocalBinder binder = (MyService.MyLocalBinder) service;
-            LogUtils.debugInfo("demoservice", "onServiceConnected");
-            MyService myService = binder.getService();
-            myService.myway();
-            binder.start();
-            mBound = true;
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            LogUtils.debugInfo("demoservice", "onServiceDisconnected");
-            mBound = false;
-        }
-    };
-
-    /**
-     * 跨进程通信
-     * 在bindService时 就会获取到mService
-     */
-    private ServiceConnection messengerCon = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LogUtils.debugInfo("MessengerService","onServiceConnected");
-            mService = new Messenger(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-        }
-    };
-
-    /**
-     * 接收服务器返回的信息
-     */
-    private Messenger mReceiveReplyMsg = new Messenger(new ReceiverReplayMsgHandler());
-
-    private class ReceiverReplayMsgHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MessengerService.MSG_SAY_HELLO:
-                 LogUtils.debugInfo("MessengerService",msg.getData().getString("reply"));
-                    break;
-                    default:
-                        super.handleMessage(msg);
-            }
-
-        }
-    }
-
 }

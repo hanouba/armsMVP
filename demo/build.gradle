@@ -42,7 +42,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            if (variant.name.equalsIgnoreCase('release')){
+            if (variant.name.equalsIgnoreCase('release')) {
                 def df = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 outputFileName = "app_${df.format(new Date())}_${defaultConfig.versionName}.apk"
             }
@@ -64,6 +64,7 @@ dependencies {
 
     //support
     implementation rootProject.ext.dependencies["cardview-v7"]
+    implementation rootProject.ext.dependencies["design"]
 
     //tools
     //注意 Arms 核心库现在并不会依赖某个 EventBus, 要想使用 EventBus, 还请在项目中自行依赖对应的 EventBus
