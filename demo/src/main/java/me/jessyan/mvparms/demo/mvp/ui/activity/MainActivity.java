@@ -1,34 +1,18 @@
 package me.jessyan.mvparms.demo.mvp.ui.activity;
 
-import android.app.Service;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.Button;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.widget.FrameLayout;
 
-import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
-import com.jess.arms.utils.LogUtils;
-
-import java.text.Bidi;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import me.jessyan.mvparms.demo.R;
 import me.jessyan.mvparms.demo.app.base.BaseSupportActivity;
-import me.jessyan.mvparms.demo.app.service.DemoService;
-import me.jessyan.mvparms.demo.app.service.MessengerService;
-import me.jessyan.mvparms.demo.app.service.MyService;
 import me.jessyan.mvparms.demo.mvp.ui.fragment.DeviceFragment;
 import me.jessyan.mvparms.demo.mvp.ui.fragment.HomeFragment;
 import me.jessyan.mvparms.demo.mvp.ui.fragment.PersenFragment;
@@ -42,6 +26,13 @@ public class MainActivity extends BaseSupportActivity {
 
     @BindView(R.id.bottom_bar)
     BottomBar mBottomBar;
+    @BindView(R.id.fragment_contain)
+    FrameLayout fragmentContain;
+    @BindView(R.id.navigation)
+    NavigationView navigation;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+
 
     private BottomBarTab homeTab;
     private BottomBarTab categoryTab;
@@ -116,4 +107,6 @@ public class MainActivity extends BaseSupportActivity {
         });
 
     }
+
+
 }

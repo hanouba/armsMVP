@@ -30,6 +30,7 @@ import me.jessyan.mvparms.demo.mvp.presenter.LoginPresenter;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
 
+
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginContract.View {
 
 

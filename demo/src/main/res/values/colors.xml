@@ -11,5 +11,9 @@
 
     <color name="bottom_navigation_unselected">#515151</color>
     <color name="bottom_navigation_selected">@color/color_0B8FFE</color>
+    <color name="home_activity_three_background">#24d1d8</color>
+    <color name="home_activity_four_background">#17c295</color>
+<!--    页面背景 -->
+    <color name="color_background">#F8F8FF</color>
 
 </resources>

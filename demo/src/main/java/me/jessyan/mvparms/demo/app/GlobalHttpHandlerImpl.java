@@ -33,6 +33,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import timber.log.Timber;
 
+import static me.jessyan.mvparms.demo.app.AppCounts.KEY_AUTHENTICATION;
+
 /**
  * ================================================
  * 展示 {@link GlobalHttpHandler} 的用法
@@ -62,6 +64,7 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
     @Override
     public Response onHttpResultResponse(@Nullable String httpResult, @NonNull Interceptor.Chain chain, @NonNull Response response) {
         if (!TextUtils.isEmpty(httpResult) && RequestInterceptor.isJson(response.body().contentType())) {
+
 
 //            try {
 //                List<User> list = ArmsUtils.obtainAppComponentFromContext(context).gson().fromJson(httpResult, new TypeToken<List<User>>() {
@@ -101,6 +104,7 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
         /* 如果需要在请求服务器之前做一些操作, 则重新构建一个做过操作的 Request 并 return, 如增加 Header、Params 等请求信息, 不做操作则直接返回参数 request
         return chain.request().newBuilder().header("token", tokenId)
                               .build(); */
+
         return request;
     }
 }
