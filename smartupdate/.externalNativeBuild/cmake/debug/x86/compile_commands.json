@@ -1,0 +1,67 @@
+[
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\patchUtils.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\patchUtils.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\patchUtils.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\update-lib.cpp.o -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\update-lib.cpp",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\update-lib.cpp"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\blocksort.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\blocksort.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\blocksort.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\bzip2.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\bzip2recover.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2recover.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2recover.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\bzlib.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzlib.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzlib.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\compress.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\compress.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\compress.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\crctable.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\crctable.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\crctable.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\decompress.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\decompress.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\decompress.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\huffman.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\huffman.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\huffman.c"
+},
+
+{
+  "directory": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/x86",
+  "command": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security  -O0 -fno-limit-debug-info  -fPIC   -o CMakeFiles\\update-lib.dir\\bzip2\\randtable.c.o   -c F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\randtable.c",
+  "file": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\randtable.c"
+}
+]

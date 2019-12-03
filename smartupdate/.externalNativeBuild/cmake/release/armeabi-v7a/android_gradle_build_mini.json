@@ -1,0 +1,18 @@
+{
+  "buildFiles": [
+    "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\build\\cmake\\platforms.cmake",
+    "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\build\\cmake\\android.toolchain.cmake",
+    "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "E:\\DevelopTools\\SDK\\cmake\\3.10.2.4988404\\bin\\cmake.exe --build \"F:\\DEMO\\MVP\\armmvp\\smartupdate\\.externalNativeBuild\\cmake\\release\\armeabi-v7a\" --target clean"
+  ],
+  "libraries": {
+    "update-lib-Release-armeabi-v7a": {
+      "artifactName": "update-lib",
+      "buildCommand": "E:\\DevelopTools\\SDK\\cmake\\3.10.2.4988404\\bin\\cmake.exe --build \"F:\\DEMO\\MVP\\armmvp\\smartupdate\\.externalNativeBuild\\cmake\\release\\armeabi-v7a\" --target update-lib",
+      "abi": "armeabi-v7a",
+      "output": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\build\\intermediates\\cmake\\release\\obj\\armeabi-v7a\\libupdate-lib.so"
+    }
+  }
+}

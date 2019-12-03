@@ -1,0 +1,94 @@
+{
+  "stringTable": {
+    "0": "F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/release/x86",
+    "1": "--target=i686-none-linux-android19 --gcc-toolchain=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=E:/DevelopTools/SDK/ndk/20.1.5948944/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dupdate_lib_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security -O2 -DNDEBUG -fPIC"
+  },
+  "buildFiles": [
+    "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\build\\cmake\\platforms.cmake",
+    "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\build\\cmake\\android.toolchain.cmake",
+    "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "E:\\DevelopTools\\SDK\\cmake\\3.10.2.4988404\\bin\\cmake.exe --build \"F:\\DEMO\\MVP\\armmvp\\smartupdate\\.externalNativeBuild\\cmake\\release\\x86\" --target clean"
+  ],
+  "libraries": {
+    "update-lib-Release-x86": {
+      "buildCommand": "E:\\DevelopTools\\SDK\\cmake\\3.10.2.4988404\\bin\\cmake.exe --build \"F:\\DEMO\\MVP\\armmvp\\smartupdate\\.externalNativeBuild\\cmake\\release\\x86\" --target update-lib",
+      "buildType": "release",
+      "toolchain": "1949924768",
+      "abi": "x86",
+      "artifactName": "update-lib",
+      "files": [
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\patchUtils.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\blocksort.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzip2recover.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\bzlib.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\compress.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\crctable.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\decompress.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\huffman.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\bzip2\\randtable.c",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        },
+        {
+          "src": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\src\\main\\cpp\\update-lib.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "F:\\DEMO\\MVP\\armmvp\\smartupdate\\build\\intermediates\\cmake\\release\\obj\\x86\\libupdate-lib.so"
+    }
+  },
+  "toolchains": {
+    "1949924768": {
+      "cCompilerExecutable": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "E:\\DevelopTools\\SDK\\ndk\\20.1.5948944\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

@@ -1,0 +1,13 @@
+# ninja log v5
+1	375	595765857	CMakeFiles/update-lib.dir/patchUtils.c.o	64296d4e820dfe3b
+83	609	595765857	CMakeFiles/update-lib.dir/bzip2/blocksort.c.o	c7ec177e5d85d2a0
+197	647	595765857	CMakeFiles/update-lib.dir/bzip2/bzip2recover.c.o	471dbbc14bfc6cdd
+243	888	595765857	CMakeFiles/update-lib.dir/bzip2/bzlib.c.o	491421440d3c3e13
+42	935	595765857	CMakeFiles/update-lib.dir/update-lib.cpp.o	1f53a0dcee8e8d2f
+609	986	595765857	CMakeFiles/update-lib.dir/bzip2/crctable.c.o	6474afbfda10f075
+147	987	595765857	CMakeFiles/update-lib.dir/bzip2/bzip2.c.o	3c13b2845707ee9a
+376	987	595765857	CMakeFiles/update-lib.dir/bzip2/compress.c.o	c13dd6dd2948396d
+648	1146	595765858	CMakeFiles/update-lib.dir/bzip2/decompress.c.o	db9b49869827db22
+936	1162	595765858	CMakeFiles/update-lib.dir/bzip2/randtable.c.o	3a82eeab7521a01c
+888	1178	595765858	CMakeFiles/update-lib.dir/bzip2/huffman.c.o	e7ef3afffcf4cc0f
+1178	1315	595765858	F:/DEMO/aboutupdata/AppSmartUpdate-master/smartupdate/build/intermediates/cmake/debug/obj/arm64-v8a/libupdate-lib.so	57947d156e3672a6

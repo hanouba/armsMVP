@@ -69,7 +69,7 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
                 .subscribe(new ErrorHandleSubscriber<BaseResponse<HomeDataBean>>(mErrorHandler) {
                     @Override
                     public void onNext(BaseResponse<HomeDataBean> homeDataBeanBaseResponse) {
-                        ToastUtils.showShort("h",homeDataBeanBaseResponse.getResult());
+                        ToastUtils.showShort("首页数据",homeDataBeanBaseResponse.getResult());
                     }
                 });
     }
