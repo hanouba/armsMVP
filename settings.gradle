@@ -1,1 +1,1 @@
-include ':ywzs', ':smartupdate'
+include ':ywzs', ':smartupdate', ':videoview'
