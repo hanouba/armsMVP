@@ -3,10 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="视频"
-        android:textSize="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <com.hansen.videoview.VideoPlayerView
+        android:id="@+id/ijk_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_dp_200"/>
 
 </LinearLayout>

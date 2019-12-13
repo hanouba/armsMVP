@@ -106,4 +106,5 @@ dependencies {
     //fragment
     implementation rootProject.ext.dependencies["fragmentation"]
     implementation rootProject.ext.dependencies["fragmentation-core"]
+    implementation project(':videoview')
 }

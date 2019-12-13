@@ -93,9 +93,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         SPUtils.getInstance().put(AppCounts.SESSION_ID,sid);
         SPUtils.getInstance().put(AppCounts.USER_ID,uid);
 
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        finish();
+
         
 
     }
@@ -128,6 +126,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_login:
+
+                Intent intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                finish();
                  mPresenter.getPorject("whtv","whtv","123456");
                 break;
             case R.id.tv_forgete_password:

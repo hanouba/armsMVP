@@ -6,10 +6,15 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.VideoView;
 
+
+import com.hansen.videoview.VideoPlayerView;
 import com.ivsom.ops.R;
 import com.ivsom.ops.app.base.BaseSupportFragment;
 import com.jess.arms.di.component.AppComponent;
+
+import butterknife.BindView;
 
 
 /**
@@ -23,6 +28,12 @@ import com.jess.arms.di.component.AppComponent;
  * @version: 2.1.67
  */
 public class VideoFragment extends BaseSupportFragment {
+
+
+    @BindView(R.id.ijk_video_view)
+    VideoPlayerView mVideoView;
+
+
     @Override
     public void setupFragmentComponent(@NonNull AppComponent appComponent) {
 
@@ -35,7 +46,7 @@ public class VideoFragment extends BaseSupportFragment {
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        mVideoView.setVideoPath("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4");
     }
 
     @Override

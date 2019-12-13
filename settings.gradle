@@ -1,1 +1,1 @@
-include ':ywzs', ':smartupdate', ':videoview'
+include ':ywzs', ':smartupdate', ':videoview', ':ijkplayer-java'
