@@ -7,18 +7,23 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hansen.videoview.contant.Settings;
+import com.hansen.videoview.ijkexo.IjkExoMediaPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+import tv.danmaku.ijk.media.player.TextureMediaPlayer;
 
 /**
  * @author HanN on 2019/12/12 15:18
@@ -76,6 +81,11 @@ public class VideoPlayerView extends FrameLayout {
     private IMediaPlayer mMediaPlayer = null;
 
     private List<Integer> mAllRenders = new ArrayList<Integer>();
+
+//    准备结束时间
+    private long mPreparedEndTime = 0;
+    private long mPrepareStartTime = 0;
+
     public VideoPlayerView(Context context) {
         this(context,null);
 
@@ -220,6 +230,17 @@ public class VideoPlayerView extends FrameLayout {
 
         AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
         am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        mMediaPlayer = createPlayer(mSettings.getPlayer());
+
+        mMediaPlayer.setOnPreparedListener(mPreparedListener);
+        mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
+        mMediaPlayer.setOnCompletionListener(mCompletionListener);
+        mMediaPlayer.setOnErrorListener(mErrorListener);
+        mMediaPlayer.setOnInfoListener(mInfoListener);
+        mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
+        mMediaPlayer.setOnSeekCompleteListener(mSeekCompleteListener);
+        mMediaPlayer.setOnTimedTextListener(mOnTimedTextListener);
     }
 
     /**
@@ -241,4 +262,90 @@ public class VideoPlayerView extends FrameLayout {
         }
     }
 
+
+    /**
+     *根据设置的播放类型进行mediaplayer的初始化
+     * @param playerType
+     * @return
+     */
+    public IMediaPlayer createPlayer(int playerType) {
+        IMediaPlayer mediaPlayer = null;
+
+        switch (playerType) {
+            case Settings.PV_PLAYER__IJKEXOMEDIAPLAYER: {
+                IjkExoMediaPlayer IjkExoMediaPlayer = new IjkExoMediaPlayer(mAppContext);
+                mediaPlayer = IjkExoMediaPlayer;
+            }
+            break;
+            case Settings.PV_PLAYER__ANDROIDMEDIAPLAYER: {
+                AndroidMediaPlayer androidMediaPlayer = new AndroidMediaPlayer();
+                mediaPlayer = androidMediaPlayer;
+            }
+            break;
+            case Settings.PV_PLAYER__IJKMEDIAPLAYER:
+            default: {
+                IjkMediaPlayer ijkMediaPlayer = null;
+                if (mUri != null) {
+                    ijkMediaPlayer = new IjkMediaPlayer();
+                    ijkMediaPlayer.native_setLogLevel(IjkMediaPlayer.IJK_LOG_DEBUG);
+
+                    if (mSettings.getUsingMediaCodec()) {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
+                        if (mSettings.getUsingMediaCodecAutoRotate()) {
+                            ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 1);
+                        } else {
+                            ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-auto-rotate", 0);
+                        }
+                        if (mSettings.getMediaCodecHandleResolutionChange()) {
+                            ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1);
+                        } else {
+                            ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 0);
+                        }
+                    } else {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 0);
+                    }
+
+                    if (mSettings.getUsingOpenSles()) {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 1);
+                    } else {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0);
+                    }
+
+                    String pixelFormat = mSettings.getPixelFormat();
+                    if (TextUtils.isEmpty(pixelFormat)) {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "overlay-format", IjkMediaPlayer.SDL_FCC_RV32);
+                    } else {
+                        ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "overlay-format", pixelFormat);
+                    }
+                    ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 1);
+                    ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 0);
+
+                    ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0);
+
+                    ijkMediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter", 48);
+                }
+                mediaPlayer = ijkMediaPlayer;
+            }
+            break;
+        }
+
+        if (mSettings.getEnableDetachedSurfaceTextureView()) {
+            mediaPlayer = new TextureMediaPlayer(mediaPlayer);
+        }
+
+        return mediaPlayer;
+    }
+
+    /**
+     * 准备状态监听器
+     */
+    IMediaPlayer.OnPreparedListener mPreparedListener = new IMediaPlayer.OnPreparedListener() {
+
+        @Override
+        public void onPrepared(IMediaPlayer mp) {
+            mPreparedEndTime = System.currentTimeMillis();
+
+            mHudViewHolder.updateLoadCost(mPreparedEndTime - mPrepareStartTime);
+        }
+    };
 }
