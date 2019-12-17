@@ -234,13 +234,13 @@ public class VideoPlayerView extends FrameLayout {
         mMediaPlayer = createPlayer(mSettings.getPlayer());
 
         mMediaPlayer.setOnPreparedListener(mPreparedListener);
-        mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
-        mMediaPlayer.setOnCompletionListener(mCompletionListener);
-        mMediaPlayer.setOnErrorListener(mErrorListener);
-        mMediaPlayer.setOnInfoListener(mInfoListener);
-        mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
-        mMediaPlayer.setOnSeekCompleteListener(mSeekCompleteListener);
-        mMediaPlayer.setOnTimedTextListener(mOnTimedTextListener);
+//        mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
+//        mMediaPlayer.setOnCompletionListener(mCompletionListener);
+//        mMediaPlayer.setOnErrorListener(mErrorListener);
+//        mMediaPlayer.setOnInfoListener(mInfoListener);
+//        mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
+//        mMediaPlayer.setOnSeekCompleteListener(mSeekCompleteListener);
+//        mMediaPlayer.setOnTimedTextListener(mOnTimedTextListener);
     }
 
     /**
@@ -345,7 +345,7 @@ public class VideoPlayerView extends FrameLayout {
         public void onPrepared(IMediaPlayer mp) {
             mPreparedEndTime = System.currentTimeMillis();
 
-            mHudViewHolder.updateLoadCost(mPreparedEndTime - mPrepareStartTime);
+//            mHudViewHolder.updateLoadCost(mPreparedEndTime - mPrepareStartTime);
         }
     };
 }
