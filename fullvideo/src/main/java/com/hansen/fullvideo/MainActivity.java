@@ -8,20 +8,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.CourseInfo;
+import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.CourseInfoDao;
+import com.hansen.fullvideo.floatactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +45,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     protected int aveWidth;//课程格子平均宽度
     protected int screenWidth;//屏幕宽度
     protected int gridHeight = 80;//格子高度
@@ -50,6 +58,14 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout rlContent;
     //空的用于定位
     private TextView tvEmpty;
+    //模板列表
+    private ListView lvTemplate;
+    //
+    private LinearLayout llContent;
+    private LinearLayout llBigScreen;
+    private RelativeLayout rlContentTitle;
+    private Button btEdit;
+
     //课程信息，key为星期几，value是这一天的课程信息
     //key 是第几列，value是这一列的信息
     private Map<String, List<CourseInfo>> courseInfoMap;
@@ -65,17 +81,76 @@ public class MainActivity extends AppCompatActivity {
     private Map<Integer, List<CourseInfo>> textviewCourseInfoMap;//保存每个textview对应的课程信息 map,key为哪一天（如星期一则key为1）
     private List<TextView> courseTextViewList;//保存显示课程信息的TextView
 
+    private static final  int UPDATE_VIEW_MEASERY = 1002;
+    private Handler mHandle = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPDATE_VIEW_MEASERY:
+
+                    break;
+            }
+        }
+    };
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        Log.i("initTable","onWindowFocusChanged"+hasFocus);
+        if (hasFocus) {
+            initTable();
+
+            initCourse();
+            //显示课表内容
+            initCourseTableBody(1);
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        initTable();
+        initListener();
+
+        initData();
+
+        checkPermiss();
+    }
+    private void initView() {
+        rlContent = findViewById(R.id.rl_video_content);
+        llBigScreen = findViewById(R.id.ll_big_screen);
+        tvEmpty = findViewById(R.id.tv_empty);
+        lvTemplate = findViewById(R.id.lv_template);
+        llContent = findViewById(R.id.ll_content);
+        rlContentTitle = findViewById(R.id.rl_content_title);
+        btEdit = findViewById(R.id.bt_edit);
+
+    }
+    private void initListener() {
+        btEdit.setOnClickListener(this);
+    }
+
+    private void initData() {
         cInfoDao = new CourseInfoDao(getApplicationContext());
         courseInfoList = new LinkedList<CourseInfo>();
         textviewCourseInfoMap = new HashMap<Integer, List<CourseInfo>>();
         courseTextViewList = new ArrayList<TextView>();
-        checkPermiss();
+
+        List<TemplateBean> tempLists = new ArrayList<>();
+
+        for (int i = 1; i <= 100; i++) {
+
+            tempLists.add(new TemplateBean("微创预案"+ i,R.mipmap.fab_add));
+        }
+
+
+        TemplateAdapter templateAdapter = new TemplateAdapter(this,R.layout.item_template,tempLists);
+
+        lvTemplate.setAdapter(templateAdapter);
+
+        mHandle.sendEmptyMessage(UPDATE_VIEW_MEASERY);
+
     }
 
     @AfterPermissionGranted(1)
@@ -189,9 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         //如果从服务器获取成功，则插入数据库
         saveCourse();
-        initCourse();
-        //显示课表内容
-        initCourseTableBody(1);
+
     }
 
     //将课程列表存入数据库
@@ -219,17 +292,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void initView() {
-        rlContent = findViewById(R.id.rl_video_content);
-        tvEmpty = findViewById(R.id.tv_empty);
-    }
+
 
     private void initTable() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int left = rlContent.getLeft()+llBigScreen.getLeft()+lvTemplate.getLeft()+llContent.getLeft();
+        int right = lvTemplate.getRight()+llBigScreen.getRight();
+
+        int top =  rlContent.getTop()+rlContentTitle.getTop()+llBigScreen.getTop();
+        int bottom =  rlContent.getTop()+rlContentTitle.getTop()+llBigScreen.getBottom();
+
+        Log.i("initTable","left"+left+"right"+right);
+        Log.i("initTable","top"+top+"bottom"+bottom);
+
 
         //屏幕宽度
-        int width = dm.widthPixels;
+        int width = right - left;
+
+
+
         //平均宽度
         int aveWidth = width / columnNum;
         //给列头设置宽度
@@ -237,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
         this.aveWidth = aveWidth;
 
         //屏幕高度
-        int height = dm.heightPixels;
+        int height = bottom - top;
         gridHeight = height / rowNum;
 
 
@@ -444,5 +526,18 @@ public class MainActivity extends AppCompatActivity {
             } while (list.size() < lastListSize && list.size() != 0);
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_edit:
+                Log.i("initTable","bt_edit");
+                int left = rlContent.getLeft()+llBigScreen.getLeft()+lvTemplate.getLeft()+llContent.getLeft();
+                int right = lvTemplate.getRight()+llBigScreen.getRight();
+                Log.i("initTable","left"+left+"right"+right);
+                break;
+                default:
+        }
     }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+
+    android:orientation="horizontal">
+
+    <ImageView
+        android:gravity="center"
+        android:id="@+id/temp_image"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:src="@mipmap/fab_add"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:gravity="center|left"
+        android:id="@+id/temp_name"
+        android:layout_weight="4"
+        android:layout_width="0dp"
+        android:textColor="@color/courseTable3"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
