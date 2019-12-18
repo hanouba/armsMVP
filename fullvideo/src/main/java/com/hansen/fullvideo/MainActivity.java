@@ -92,18 +92,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
+    private int hasShow = 0;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         Log.i("initTable","onWindowFocusChanged"+hasFocus);
+        hasShow ++;
+        if (hasShow == 1) {
         if (hasFocus) {
+
             initTable();
 
             initCourse();
             //显示课表内容
             initCourseTableBody(1);
         }
+        }else {
 
+        }
     }
 
     @Override
@@ -378,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initCourseTableBody(int currentWeek) {
+
         for (Map.Entry<String, List<CourseInfo>> entry : courseInfoMap.entrySet()) {
             //查找出最顶层的课程信息（顶层课程信息即显示在最上层的课程，最顶层的课程信息满足两个条件 1、当前周数在该课程的周数范围内 2、该课程的节数跨度最大
             CourseInfo upperCourse = null;
