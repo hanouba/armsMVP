@@ -21,9 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 		db.execSQL("CREATE TABLE IF NOT EXISTS course_info" +		// 课程信息表
 				"(cid INTEGER, " +		// 课程ID
-				"weekfrom INTEGER, " +		// 开始周次
-				"weekto INTEGER, " +		// 结束周次
-				"weektype INTEGER, " +		// 周次类型
+				"type INTEGER, " +    // 板块类型
 				"day INTEGER, " +			// 星期几
 				"lessonfrom INTEGER, " +	// 节次开始
 				"lessonto INTEGER, " +		// 节次结束

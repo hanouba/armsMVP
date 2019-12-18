@@ -20,13 +20,10 @@ public class CourseInfoDao {
 	public int insert(CourseInfo cInfo) {
 		try {
 			// 如果找到相同（时间地点相同）课程，更新信息
-			String sql1 = "SELECT cid FROM course_info WHERE weekfrom=? AND weekto=? AND weektype=? " +
-					"AND day=? AND lessonfrom=? AND lessonto=? AND place=?";
+			String sql1 = "SELECT cid FROM course_info WHERE day=? AND type=? AND lessonfrom=? AND lessonto=? AND place=?";
 			Cursor c = db.rawQuery(sql1, new String[]{
-					cInfo.getWeekfrom()+"",
-					cInfo.getWeekto()+"",
-					cInfo.getWeektype()+"",
 					cInfo.getDay()+"",
+					cInfo.getType()+"",
 					cInfo.getLessonfrom()+"",
 					cInfo.getLessonto()+"",
 					cInfo.getPlace()
@@ -43,15 +40,13 @@ public class CourseInfoDao {
 				return cid;
 			}
 			// 否则插入课程
-			String sql = "INSERT INTO course_info (cid,weekfrom,weekto,weektype,day,lessonfrom,lessonto," +
+			String sql = "INSERT INTO course_info (cid,day,type,lessonfrom,lessonto," +
                     "coursename,teacher,place) " +
 					"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			db.execSQL(sql, new Object[] {
 					cInfo.getCid(),
-					cInfo.getWeekfrom(),
-					cInfo.getWeekto(),
-					cInfo.getWeektype(),
 					cInfo.getDay(),
+					cInfo.getType(),
 					cInfo.getLessonfrom(),
 					cInfo.getLessonto(),
 					cInfo.getCoursename(),
