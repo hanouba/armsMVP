@@ -9,6 +9,8 @@ import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.BigScreenBeanDao;
 import com.hansen.fullvideo.bean.DaoMaster;
 import com.hansen.fullvideo.bean.DaoSession;
+import com.hansen.fullvideo.bean.SingleViewLocation;
+import com.hansen.fullvideo.bean.SingleViewLocationDao;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class DBHelper  {
      * dao
      */
     private BigScreenBeanDao bigScreenBeanDao;
+    private SingleViewLocationDao singleViewLocationDao;
 
     private static DBHelper mDbController;
 
@@ -67,6 +70,7 @@ public class DBHelper  {
         mDaoMaster =new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
         bigScreenBeanDao = mDaoSession.getBigScreenBeanDao();
+        singleViewLocationDao = mDaoSession.getSingleViewLocationDao();
     }
 
     /**
@@ -98,6 +102,14 @@ public class DBHelper  {
      */
     public void insertOrReplace(BigScreenBean bigScreenBean){
         bigScreenBeanDao.insertOrReplace(bigScreenBean);
+    }
+
+    /**
+     * 存入单个控件的位置信息
+     * @param singleViewLocation
+     */
+    public void insertOrReplaceSingleLocation(SingleViewLocation singleViewLocation){
+        singleViewLocationDao.insertOrReplace(singleViewLocation);
     }
     /**插入一条记录，表里面要没有与之相同的记录
      *
@@ -139,6 +151,10 @@ public class DBHelper  {
         List<BigScreenBean> bigScreenBeans  = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Type.eq(type)).build().list();
 
             bigScreenBeanDao.deleteInTx(bigScreenBeans);
+
+    }
+
+    public void searchByXY(float x,float y) {
 
     }
 }

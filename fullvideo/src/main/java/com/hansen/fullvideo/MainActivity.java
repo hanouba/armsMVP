@@ -2,40 +2,15 @@ package com.hansen.fullvideo;
 
 
 import android.Manifest;
-import android.arch.lifecycle.ViewModelProvider;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
-import com.hansen.fullvideo.bean.CourseInfo;
-import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.DBHelper;
-import com.hansen.fullvideo.thread.ThreadPollProxy;
-import com.hansen.fullvideo.thread.ThreadPoolManager;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import com.hansen.fullvideo.utils.Utils;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;

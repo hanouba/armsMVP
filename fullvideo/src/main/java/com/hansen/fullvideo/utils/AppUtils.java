@@ -1,4 +1,4 @@
-package com.hansen.fullvideo;
+package com.hansen.fullvideo.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

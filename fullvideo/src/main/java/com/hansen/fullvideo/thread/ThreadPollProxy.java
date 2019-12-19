@@ -2,7 +2,7 @@ package com.hansen.fullvideo.thread;
 
 
 
-import com.hansen.fullvideo.LogUtils;
+import com.hansen.fullvideo.utils.LogUtils;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;

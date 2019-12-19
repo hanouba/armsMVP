@@ -1,4 +1,4 @@
-package com.hansen.fullvideo;
+package com.hansen.fullvideo.utils;
 
 /**
  * Date  : 2017-05-11

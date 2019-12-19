@@ -1,6 +1,5 @@
 package com.hansen.fullvideo;
 
-import android.Manifest;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,13 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
-import com.hansen.fullvideo.bean.CourseInfo;
 import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.DBHelper;
+import com.hansen.fullvideo.ui.BigScreenControlView;
+import com.hansen.fullvideo.utils.LogUtils;
 
+import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,9 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class GreenActivity extends AppCompatActivity  implements View.OnClickListener  {
     protected int aveWidth;//课程格子平均宽度
@@ -69,9 +66,19 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private DBHelper mDBHelper;
 
     private int hasShow = 0;
+    //空白小块被选择的次数
+    private int clickTimes = 0;
 
 
     private List<Integer> typeLits = new ArrayList<>();
+    private BigScreenControlView bscView;
+    private int contentLeft;
+    private int contentRight;
+    private int contentTop;
+    private int startRow;
+    private int startColumn;
+    private int endRow;
+    private int endColumn;
 
 
     @Override
@@ -112,28 +119,37 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         llContent = findViewById(R.id.ll_content);
         rlContentTitle = findViewById(R.id.rl_content_title);
         btEdit = findViewById(R.id.bt_edit);
+        bscView = findViewById(R.id.bscv_view);
 
 
 
-        llBigScreen.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        float left = event.getX();
-                        LogUtils.d("initTable","ACTION_DOWN"+left+"getRight"+event.getY());
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        LogUtils.d("initTable","ACTION_MOVE"+event.getX()+"getRight"+event.getY());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        LogUtils.d("initTable","ACTION_UP"+event.getX()+"getRight"+event.getY());
-                        break;
-                        default:
-                }
-                return true;
-            }
-        });
+        //这里的尺寸是以控件的尺寸开始计时不是屏幕位置
+//        llBigScreen.setOnTouchListener(new View.OnTouchListener() {
+//
+//            private float startX;
+//            private float startY;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//
+//                        startX = event.getX();
+//                        startY = event.getY();
+//                        LogUtils.d("initTable","ACTION_DOWN"+ startX +"getRight"+ startY);
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        bscView.setSelectArea(startX ,startY,event.getX(),event.getY());
+//                        LogUtils.d("initTable","ACTION_MOVE"+event.getX()+"getRight"+event.getY());
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        LogUtils.d("initTable","ACTION_UP"+event.getX()+"getRight"+event.getY());
+//                        break;
+//                        default:
+//                }
+//                return true;
+//            }
+//        });
     }
 
     private void initListener() {
@@ -171,18 +187,18 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private void initTable() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int left = rlContent.getLeft() + llBigScreen.getLeft() + lvTemplate.getLeft() + llContent.getLeft();
-        int right = lvTemplate.getRight() + llBigScreen.getRight();
+        contentLeft = rlContent.getLeft() + llBigScreen.getLeft() + lvTemplate.getLeft() + llContent.getLeft();
+        contentRight = lvTemplate.getRight() + llBigScreen.getRight();
 
-        int top = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getTop();
+        contentTop = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getTop();
         int bottom = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getBottom();
 
-        Log.i("initTable", "left" + left + "right" + right);
-        Log.i("initTable", "top" + top + "bottom" + bottom);
+        Log.i("initTable", "left" + contentLeft + "right" + contentRight);
+        Log.i("initTable", "top" + contentTop + "bottom" + bottom);
 
 
         //屏幕宽度
-        int width = right - left;
+        int width = contentRight - contentLeft;
 
 
         //平均宽度
@@ -192,7 +208,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         this.aveWidth = aveWidth;
 
         //屏幕高度
-        int height = bottom - top;
+        int height = bottom - contentTop;
         gridHeight = height / rowNum;
 
 
@@ -226,11 +242,56 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                 }
 
                 tx.setLayoutParams(rp);
+
+                final int finalI = i;
+                final int finalJ = j;
+                tx.setOnTouchListener(new View.OnTouchListener() {
+
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+
+                                clickTimes ++;
+                                if (clickTimes == 1) {
+                                    startRow = finalI;
+                                    startColumn = finalJ-1;
+                                }else {
+                                    endRow = finalI;
+                                    endColumn = finalJ-1;
+                                    clickTimes = 0;
+                                    //将区间内的添加色块
+
+                                    addColor();
+
+                                }
+                                break;
+
+                            case MotionEvent.ACTION_UP:
+                                LogUtils.d("initTable","抬起后行--"+ finalI +"列--"+ finalJ);
+                                break;
+                            default:
+                        }
+                        return true;
+                    }
+                });
                 rlContent.addView(tx);
             }
         }
 
 
+    }
+
+    private void addColor() {
+        LogUtils.d("initTable","开始行--"+ startRow +"结束列--"+ endRow);
+        int selectColumn = endColumn - startColumn + 1;
+        int typeNum =(int) (Math.random( )*50+50) ;
+
+        for (int i = 0; i < selectColumn; i++) {
+            int cidNum =(int) (Math.random( )*1000) ;
+            mDBHelper.insert(new BigScreenBean(typeNum,startColumn+i,startRow,endRow,cidNum,"cctv"+typeNum,""));
+        }
     }
 
 
@@ -306,6 +367,8 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     //五种颜色的背景
                     int[] background = {R.drawable.main_course1, R.drawable.main_course2,
                             R.drawable.main_course3, R.drawable.main_course4,
+                            R.drawable.main_course5,R.drawable.main_course1, R.drawable.main_course2,
+                            R.drawable.main_course3, R.drawable.main_course4,
                             R.drawable.main_course5};
                     //记录顶层课程在cInfoList中的索引位置
                     final int upperCourseIndex = index;
@@ -328,7 +391,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     courseInfo.setGravity(Gravity.CENTER);
                     //选择一个颜色背景
 
-                    courseInfo.setBackgroundResource(background[upperCourse.getType()]);
+                    courseInfo.setBackgroundResource(background[upperCourse.getType() % 10]);
 
                     //                    int colorIndex = ((upperCourse.getLessonfrom() - 1) * 8 + upperCourse.getDay()) % (background.length - 1);
 
