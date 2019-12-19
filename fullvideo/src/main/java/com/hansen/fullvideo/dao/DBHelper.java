@@ -3,6 +3,7 @@ package com.hansen.fullvideo.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.BigScreenBeanDao;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class DBHelper  {
 
-	private static final String DATABASE_NAME = "han_full_video_db.db";
+	private static final String DATABASE_NAME = "green_full_video_db.db";
 	private static final int DATABASE_VERSION = 1;
     /**
      * Helper
@@ -132,10 +133,13 @@ public class DBHelper  {
         return personInfors;
     }
     /**
-     * 删除数据
+     * 根据type类型删除数据
      */
-    public void delete(String wherecluse){
-        bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Type.eq(wherecluse)).buildDelete().executeDeleteWithoutDetachingEntities();
+    public void deleteByType(int type){
+        List<BigScreenBean> bigScreenBeans  = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Type.eq(type)).build().list();
+
+            bigScreenBeanDao.deleteInTx(bigScreenBeans);
+
     }
 }
 

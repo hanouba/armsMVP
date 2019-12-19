@@ -8,71 +8,17 @@
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/lv_template"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2" />
 
-
-    <LinearLayout
-        android:id="@+id/ll_content"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:background="@color/textBorder"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:id="@+id/rl_content_title"
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:text="实时预案查看"
-                android:textColor="@color/courseTable2"
-                android:textSize="20sp" />
-
-            <Button
-                android:id="@+id/bt_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:text="编辑"
-                android:textColor="@color/courseTable2"
-                android:textSize="20sp" />
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_big_screen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
-            android:background="#fff"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp" />
-
-            <RelativeLayout
-
-                android:id="@+id/rl_video_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </LinearLayout>
-
+    <Button
+        android:onClick="openGreen"
+        android:text="数据库版"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:onClick="openOld"
+        android:text="old"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 
 
