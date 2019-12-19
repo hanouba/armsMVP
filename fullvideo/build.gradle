@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion 28
     buildToolsVersion "28.0.0"
@@ -22,6 +22,10 @@ android {
         }
     }
 
+    greendao {
+        schemaVersion 1 //当前数据库版本
+    }
+
 }
 
 dependencies {
@@ -33,4 +37,6 @@ dependencies {
     implementation rootProject.ext.dependencies["cardview-v7"]
     implementation rootProject.ext.dependencies["design"]
     implementation 'pub.devrel:easypermissions:2.0.1'
+
+    implementation 'org.greenrobot:greendao:3.2.2' // 添加库
 }

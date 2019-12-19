@@ -1,3 +1,0 @@
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/release/x86/CMakeFiles/update-lib.dir
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/release/x86/CMakeFiles/edit_cache.dir
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/release/x86/CMakeFiles/rebuild_cache.dir

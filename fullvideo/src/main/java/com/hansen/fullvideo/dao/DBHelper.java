@@ -1,41 +1,141 @@
 package com.hansen.fullvideo.dao;
 
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBHelper extends SQLiteOpenHelper {
+import com.hansen.fullvideo.bean.BigScreenBean;
+import com.hansen.fullvideo.bean.BigScreenBeanDao;
+import com.hansen.fullvideo.bean.DaoMaster;
+import com.hansen.fullvideo.bean.DaoSession;
+
+import java.util.List;
+
+public class DBHelper  {
 
 	private static final String DATABASE_NAME = "han_full_video_db.db";
 	private static final int DATABASE_VERSION = 1;
-	
-	public DBHelper(Context context) {
-		//CursorFactory设置为null,使用默认值
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-	}
+    /**
+     * Helper
+     */
+    private DaoMaster.DevOpenHelper mHelper;//获取Helper对象
+    /**
+     * 数据库
+     */
+    private SQLiteDatabase db;
+    /**
+     * DaoMaster
+     */
+    private DaoMaster mDaoMaster;
+    /**
+     * DaoSession
+     */
+    private DaoSession mDaoSession;
+    /**
+     * 上下文
+     */
+    private Context context;
+    /**
+     * dao
+     */
+    private BigScreenBeanDao bigScreenBeanDao;
 
-	//数据库第一次被创建时onCreate会被调用
-	@Override
-	public void onCreate(SQLiteDatabase db) {
+    private static DBHelper mDbController;
+
+    /**
+     * 获取单例
+     */
+    public static DBHelper getInstance(Context context){
+        if(mDbController == null){
+            synchronized (DBHelper.class){
+                if(mDbController == null){
+                    mDbController = new DBHelper(context);
+                }
+            }
+        }
+        return mDbController;
+    }
+
+    /**
+     * 初始化
+     * @param context
+     */
+    public DBHelper(Context context) {
+        this.context = context;
+        mHelper = new DaoMaster.DevOpenHelper(context,DATABASE_NAME, null);
+        mDaoMaster =new DaoMaster(getWritableDatabase());
+        mDaoSession = mDaoMaster.newSession();
+        bigScreenBeanDao = mDaoSession.getBigScreenBeanDao();
+    }
+
+    /**
+     * 获取可读数据库
+     */
+    private SQLiteDatabase getReadableDatabase(){
+        if(mHelper == null){
+            mHelper = new DaoMaster.DevOpenHelper(context,DATABASE_NAME,null);
+        }
+        SQLiteDatabase db =mHelper.getReadableDatabase();
+        return db;
+    }
+    /**
+     * 获取可写数据库
+     * @return
+     */
+    private SQLiteDatabase getWritableDatabase(){
+        if(mHelper == null){
+            mHelper =new DaoMaster.DevOpenHelper(context,DATABASE_NAME,null);
+        }
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        return db;
+    }
 
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS course_info" +		// 课程信息表
-				"(cid INTEGER, " +		// 课程ID
-				"type INTEGER, " +    // 板块类型
-				"day INTEGER, " +			// 星期几
-				"lessonfrom INTEGER, " +	// 节次开始
-				"lessonto INTEGER, " +		// 节次结束
-				"coursename TEXT, " +				// 课程名
-				"teacher TEXT, " +			// 教师
-				"place TEXT )" 			// 地点
-				);
-				
+    /**
+     * 会自动判定是插入还是替换
+     * @param bigScreenBean
+     */
+    public void insertOrReplace(BigScreenBean bigScreenBean){
+        bigScreenBeanDao.insertOrReplace(bigScreenBean);
+    }
+    /**插入一条记录，表里面要没有与之相同的记录
+     *
+     * @param bigScreenBean
+     */
+    public long insert(BigScreenBean bigScreenBean){
+        return  bigScreenBeanDao.insert(bigScreenBean);
+    }
 
-	}
+    /**
+     * 更新数据
+     * @param bigScreenBean
+     */
+    public void update(BigScreenBean bigScreenBean){
+        BigScreenBean mOldPersonInfor = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Id.eq(bigScreenBean.getId())).build().unique();//拿到之前的记录
+        if(mOldPersonInfor !=null){
 
-	//如果DATABASE_VERSION值被改为2,系统发现现有数据库版本不同,即会调用onUpgrade
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	}
+            bigScreenBeanDao.update(mOldPersonInfor);
+        }
+    }
+    /**
+     * 按条件查询数据
+     */
+    public List<BigScreenBean> searchByWhere(String wherecluse){
+        List<BigScreenBean>personInfors = (List<BigScreenBean>) bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Type.eq(wherecluse)).build().unique();
+        return personInfors;
+    }
+    /**
+     * 查询所有数据
+     */
+    public List<BigScreenBean> searchAll(){
+        List<BigScreenBean>personInfors=bigScreenBeanDao.queryBuilder().list();
+        return personInfors;
+    }
+    /**
+     * 删除数据
+     */
+    public void delete(String wherecluse){
+        bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Type.eq(wherecluse)).buildDelete().executeDeleteWithoutDetachingEntities();
+    }
 }
 

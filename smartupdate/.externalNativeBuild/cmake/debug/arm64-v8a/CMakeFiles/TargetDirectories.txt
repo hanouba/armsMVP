@@ -1,3 +1,0 @@
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/update-lib.dir
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/edit_cache.dir
-F:/DEMO/MVP/armmvp/smartupdate/.externalNativeBuild/cmake/debug/arm64-v8a/CMakeFiles/rebuild_cache.dir

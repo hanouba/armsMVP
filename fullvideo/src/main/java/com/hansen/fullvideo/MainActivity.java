@@ -2,10 +2,7 @@ package com.hansen.fullvideo;
 
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProvider;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,22 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.CourseInfo;
 import com.hansen.fullvideo.bean.TemplateBean;
-import com.hansen.fullvideo.dao.CourseInfoDao;
-import com.hansen.fullvideo.floatactionbutton.FloatingActionButton;
+import com.hansen.fullvideo.dao.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +36,6 @@ import java.util.Map;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import pub.devrel.easypermissions.PermissionRequest;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -72,42 +65,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * 数据存储变量
+     * 数据存储变量 一个预案信息
      */
     private LinkedList<CourseInfo> courseInfoList;//课程信息链表，存储有包括cid在内的完整信息
 
-
-    CourseInfoDao cInfoDao;
     private Map<Integer, List<CourseInfo>> textviewCourseInfoMap;//保存每个textview对应的课程信息 map,key为哪一天（如星期一则key为1）
     private List<TextView> courseTextViewList;//保存显示课程信息的TextView
 
-    private static final  int UPDATE_VIEW_MEASERY = 1002;
-    private Handler mHandle = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case UPDATE_VIEW_MEASERY:
 
-                    break;
-            }
-        }
-    };
     private int hasShow = 0;
+
+
+    private List<Integer> typeLits = new ArrayList<>();
+    private DBHelper mDBHelper;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        Log.i("initTable","onWindowFocusChanged"+hasFocus);
-        hasShow ++;
+        Log.i("initTable", "onWindowFocusChanged" + hasFocus);
+        hasShow++;
         if (hasShow == 1) {
-        if (hasFocus) {
+            if (hasFocus) {
 
-            initTable();
+                initTable();
 
-            initCourse();
-            //显示课表内容
-            initCourseTableBody(1);
-        }
-        }else {
+                initCourse();
+                //显示课表内容
+                initCourseTableBody(1);
+            }
+        } else {
 
         }
     }
@@ -123,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         checkPermiss();
     }
+
     private void initView() {
         rlContent = findViewById(R.id.rl_video_content);
         llBigScreen = findViewById(R.id.ll_big_screen);
@@ -133,12 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btEdit = findViewById(R.id.bt_edit);
 
     }
+
     private void initListener() {
         btEdit.setOnClickListener(this);
     }
 
     private void initData() {
-        cInfoDao = new CourseInfoDao(getApplicationContext());
+        mDBHelper = DBHelper.getInstance(MainActivity.this);
         courseInfoList = new LinkedList<CourseInfo>();
         textviewCourseInfoMap = new HashMap<Integer, List<CourseInfo>>();
         courseTextViewList = new ArrayList<TextView>();
@@ -147,15 +134,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         for (int i = 1; i <= 100; i++) {
 
-            tempLists.add(new TemplateBean("微创预案"+ i,R.mipmap.fab_add));
+            tempLists.add(new TemplateBean("微创预案" + i, R.mipmap.fab_add));
         }
 
 
-        TemplateAdapter templateAdapter = new TemplateAdapter(this,R.layout.item_template,tempLists);
+        TemplateAdapter templateAdapter = new TemplateAdapter(this, R.layout.item_template, tempLists);
 
         lvTemplate.setAdapter(templateAdapter);
 
-        mHandle.sendEmptyMessage(UPDATE_VIEW_MEASERY);
+
 
     }
 
@@ -167,12 +154,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // ...
             Toast.makeText(this, "获取了权限", Toast.LENGTH_SHORT).show();
             getCourseFromServer(0);
+            createLocalData();
 
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, getString(R.string.camera_and_location_rationale),
                     1, perms);
         }
+    }
+
+    /**
+     * 创建预案数据
+     */
+    private void createLocalData() {
+        BigScreenBean bigScreenBean = new BigScreenBean();
+
     }
 
 
@@ -257,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cInfo5.setPlace("第三教学楼105");
 
 
-
         courseInfoList.add(cInfo1);
         courseInfoList.add(cInfo2);
         courseInfoList.add(cInfo3);
@@ -274,18 +269,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //将课程列表存入数据库
-    private boolean saveCourse() {
+    private void saveCourse() {
 
-        for (CourseInfo cInfo : courseInfoList) {
-            //                int cid = cInfoDao.insert(cInfo);
-            cInfoDao.insert(cInfo);
-            int cid = cInfo.getCid();
-            if (cid == 0) {
-                return false;
-            }
 
-        }
-        return true;
 
     }
 
@@ -298,24 +284,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
+    /**
+     * 划分表格
+     */
     private void initTable() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int left = rlContent.getLeft()+llBigScreen.getLeft()+lvTemplate.getLeft()+llContent.getLeft();
-        int right = lvTemplate.getRight()+llBigScreen.getRight();
+        int left = rlContent.getLeft() + llBigScreen.getLeft() + lvTemplate.getLeft() + llContent.getLeft();
+        int right = lvTemplate.getRight() + llBigScreen.getRight();
 
-        int top =  rlContent.getTop()+rlContentTitle.getTop()+llBigScreen.getTop();
-        int bottom =  rlContent.getTop()+rlContentTitle.getTop()+llBigScreen.getBottom();
+        int top = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getTop();
+        int bottom = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getBottom();
 
-        Log.i("initTable","left"+left+"right"+right);
-        Log.i("initTable","top"+top+"bottom"+bottom);
+        Log.i("initTable", "left" + left + "right" + right);
+        Log.i("initTable", "top" + top + "bottom" + bottom);
 
 
         //屏幕宽度
         int width = right - left;
-
 
 
         //平均宽度
@@ -453,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             aveWidth,
                             (gridHeight) * 2 + (upperCourse.getLessonto() - upperCourse.getLessonfrom() - 1) * gridHeight);
                     //textview的位置由课程开始节数和上课的时间（day of week）确定
-                    rlp.topMargin =  (upperCourse.getLessonfrom() - 1) * gridHeight;
+                    rlp.topMargin = (upperCourse.getLessonfrom() - 1) * gridHeight;
                     rlp.leftMargin = 0;
                     // 前面生成格子时的ID就是根据Day来设置的，偏移由这节课是星期几决定
                     rlp.addRule(RelativeLayout.RIGHT_OF, upperCourse.getDay());
@@ -539,12 +525,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_edit:
-                Log.i("initTable","bt_edit");
-                int left = rlContent.getLeft()+llBigScreen.getLeft()+lvTemplate.getLeft()+llContent.getLeft();
-                int right = lvTemplate.getRight()+llBigScreen.getRight();
-                Log.i("initTable","left"+left+"right"+right);
+                Log.i("initTable", "bt_edit");
+                //                编辑 显示 叉号  并且可以滑动加载新的模板
+                //1 拼接咋一起的 显示一个叉号
+                for (Map.Entry<String, List<CourseInfo>> entry : courseInfoMap.entrySet()) {
+                    CourseInfo upperCourse = null;
+                    //list里保存的是一周内某 一天的课程
+                    final List<CourseInfo> list = new ArrayList<CourseInfo>(entry.getValue());
+                    for (int m = 0; m < list.size(); m++) {
+
+                        upperCourse = list.get(m);
+
+                        int type = upperCourse.getType();
+
+                        if (typeLits.contains(type)) {
+                        } else {
+                            typeLits.add(type);
+
+
+                            ImageView split = new ImageView(this);
+                            split.setId(2000 + upperCourse.getDay() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getCid());
+                            split.setImageResource(R.mipmap.icon_close);
+                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                                    aveWidth / 4,
+                                    (gridHeight) / 4);
+                            //textview的位置由课程开始节数和上课的时间（day of week）确定
+                            rlp.topMargin = (upperCourse.getLessonfrom() - 1) * gridHeight + 10;
+                            rlp.leftMargin = 10;
+                            // 前面生成格子时的ID就是根据Day来设置的，偏移由这节课是星期几决定
+                            rlp.addRule(RelativeLayout.RIGHT_OF, upperCourse.getDay());
+                            //字体居中中
+
+                            split.setLayoutParams(rlp);
+                            rlContent.addView(split);
+
+                            split.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //点击后 删除拼接的模块
+
+                                    Log.i("initTable", "删除拼接的模块"+v.getId());
+
+
+                                }
+                            });
+
+
+
+                        }
+                    }
+                }
+
+
                 break;
-                default:
+            default:
         }
     }
 }

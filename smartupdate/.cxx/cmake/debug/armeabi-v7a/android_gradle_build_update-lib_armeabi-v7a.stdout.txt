@@ -1,2 +1,0 @@
-ninja: Entering directory `F:\DEMO\aboutupdata\AppSmartUpdate-master\smartupdate\.cxx\cmake\debug\armeabi-v7a'
-ninja: no work to do.
