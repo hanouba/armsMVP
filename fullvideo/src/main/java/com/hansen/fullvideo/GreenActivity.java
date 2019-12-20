@@ -1,5 +1,6 @@
 package com.hansen.fullvideo;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,12 +9,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.TemplateBean;
@@ -68,6 +71,8 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private int hasShow = 0;
     //空白小块被选择的次数
     private int clickTimes = 0;
+    //编辑状态
+    private int editClick=0;
 
 
     private List<Integer> typeLits = new ArrayList<>();
@@ -79,6 +84,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private int startColumn;
     private int endRow;
     private int endColumn;
+    private boolean isEditAble;
 
 
     @Override
@@ -90,14 +96,42 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
                 initTable();
 
-                initCourse();
-                //显示课表内容
-                initCourseTableBody();
+                updataTelep();
+                updateEditState(false);
             }
         } else {
 
         }
     }
+
+    /**
+     * 更新界面
+     */
+    private void updataTelep() {
+        bigScreenBeans.clear();
+        bigScreenBeans = mDBHelper.searchAllByTempIndex("1");
+        initCourse();
+        //显示课表内容
+        initCourseTableBody();
+
+
+
+    }
+
+    /**
+     * 更新编辑状态
+     * @param b
+     */
+    private void updateEditState(boolean b) {
+        isEditAble = b;
+        if (isEditAble) {
+            btEdit.setText("取消");
+        }else {
+            btEdit.setText("编辑");
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,36 +155,6 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         btEdit = findViewById(R.id.bt_edit);
         btClean = findViewById(R.id.bt_clean);
         bscView = findViewById(R.id.bscv_view);
-
-
-
-        //这里的尺寸是以控件的尺寸开始计时不是屏幕位置
-//        llBigScreen.setOnTouchListener(new View.OnTouchListener() {
-//
-//            private float startX;
-//            private float startY;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//
-//                        startX = event.getX();
-//                        startY = event.getY();
-//                        LogUtils.d("initTable","ACTION_DOWN"+ startX +"getRight"+ startY);
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        bscView.setSelectArea(startX ,startY,event.getX(),event.getY());
-//                        LogUtils.d("initTable","ACTION_MOVE"+event.getX()+"getRight"+event.getY());
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        LogUtils.d("initTable","ACTION_UP"+event.getX()+"getRight"+event.getY());
-//                        break;
-//                        default:
-//                }
-//                return true;
-//            }
-//        });
     }
 
     private void initListener() {
@@ -174,8 +178,16 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
         lvTemplate.setAdapter(templateAdapter);
 
-        bigScreenBeans = mDBHelper.searchAll();
+        bigScreenBeans = mDBHelper.searchAllByTempIndex("1");
 
+        lvTemplate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                bigScreenBeans = mDBHelper.searchAllByTempIndex(position+"1");
+                updataTelep();
+                updateEditState(false);
+            }
+        });
     }
 
 
@@ -186,7 +198,9 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     /**
      * 划分表格
      */
+    @SuppressLint("ResourceAsColor")
     private void initTable() {
+        rlContent.removeAllViews();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         contentLeft = rlContent.getLeft() + llBigScreen.getLeft() + lvTemplate.getLeft() + llContent.getLeft();
@@ -195,8 +209,6 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         contentTop = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getTop();
         int bottom = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getBottom();
 
-        Log.i("initTable", "left" + contentLeft + "right" + contentRight);
-        Log.i("initTable", "top" + contentTop + "bottom" + bottom);
 
 
         //屏幕宽度
@@ -226,6 +238,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                         gridHeight);
                 //文字对齐方式
                 tx.setGravity(Gravity.CENTER);
+                tx.setBackgroundColor(R.color.color_f1f3f5);
                 //字体样式
                 tx.setTextAppearance(this, R.style.courseTableText);
                 //如果是第一列
@@ -247,6 +260,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
                 final int finalI = i;
                 final int finalJ = j;
+//                选择控件区域
                 tx.setOnTouchListener(new View.OnTouchListener() {
 
 
@@ -254,7 +268,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     public boolean onTouch(View v, MotionEvent event) {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
-
+                                if (isEditAble) {
                                 clickTimes ++;
                                 if (clickTimes == 1) {
                                     startRow = finalI;
@@ -266,28 +280,32 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                                     endRow = finalI;
                                     endColumn = finalJ-1;
                                     clickTimes = 0;
-                                    if (endColumn >= startColumn) {
-
-                                        checkSelectLocation(startColumn,endColumn,startRow,endRow);
+                                    if ((startRow == endRow) || (startColumn == endColumn)) {
+                                        LogUtils.d("同一行或者同一列不实现");
                                     }else {
-                                        int reprStartColumn = endColumn;
-                                        int reprEndColumn = startColumn;
-                                        int reprEndRow = startRow;
-                                        int reprStartRow = endRow;
-                                        //调换起点终点
-                                        checkSelectLocation(reprStartColumn,reprEndColumn,reprStartRow,reprEndRow);
+                                        if (endColumn > startColumn) {
+
+                                            checkSelectLocation(startColumn,endColumn,startRow,endRow);
+                                        }else {
+                                            int reprStartColumn = endColumn;
+                                            int reprEndColumn = startColumn;
+                                            int reprEndRow = startRow;
+                                            int reprStartRow = endRow;
+                                            //调换起点终点
+                                            checkSelectLocation(reprStartColumn,reprEndColumn,reprStartRow,reprEndRow);
+                                        }
+
                                     }
 
 
-
-
-
-
+                                }
+                                }else {
+                                    LogUtils.d("initTable","不可编辑");
                                 }
                                 break;
 
                             case MotionEvent.ACTION_UP:
-                                LogUtils.d("initTable","抬起后行--"+ finalI +"列--"+ finalJ);
+
                                 break;
                             default:
                         }
@@ -338,7 +356,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     }
                 }
             }else {
-                //起点没数据终点没数据
+                //起点没数据终点灭
                 addColor(startCol,endCol,startR,endR);
             }
         }
@@ -347,12 +365,18 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private void addColor(int startCol,int endCol,int startR,int endR) {
         LogUtils.d("initTable","addColor"+startCol,endCol,startR,endR);
         int selectColumn = endCol - startCol + 1;
-        int typeNum =(int) (Math.random( )*50+50) ;
+        int typeNum =(int) (Math.random( )*500+50) ;
 
         for (int i = 0; i < selectColumn; i++) {
-            int cidNum =(int) (Math.random( )*1000) ;
-            mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,cidNum,"cctv"+typeNum,""));
+            if (startR > endR) {
+                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,endR,startR,"cctv"+typeNum,""));
+            }else {
+                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,"cctv"+typeNum,""));
+            }
+
         }
+
+        updataTelep();
     }
 
 
@@ -435,7 +459,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     final int upperCourseIndex = index;
                     // 动态生成课程信息TextView
                     TextView courseInfo = new TextView(this);
-                    courseInfo.setId(1000 + upperCourse.getColumn() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getCid());//设置id区分不同课程
+                    courseInfo.setId((int) (1000 + upperCourse.getColumn() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getId()));//设置id区分不同课程
                     int id = courseInfo.getId();
                     textviewCourseInfoMap.put(id, cInfoList);
                     courseInfo.setText(upperCourse.getVideoname() + "\n@" +"其他信息");
@@ -530,69 +554,96 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_edit:
+
+                editClick ++;
+                if (editClick % 2 == 0) {
+                    typeLits.clear();
+                    updataTelep();
+                    updateEditState(false);
+
+                }else {
+                    typeLits.clear();
+                    updateEditState(true);
+                }
                 Log.i("initTable", "bt_edit");
                 //                编辑 显示 叉号  并且可以滑动加载新的模板
                 //1 拼接咋一起的 显示一个叉号
-                for (Map.Entry<String, List<BigScreenBean>> entry : courseInfoMap.entrySet()) {
-                    BigScreenBean upperCourse = null;
-                    //list里保存的是一周内某 一天的课程
-                    final List<BigScreenBean> list = new ArrayList<BigScreenBean>(entry.getValue());
-                    for (int m = 0; m < list.size(); m++) {
-
-                        upperCourse = list.get(m);
-
-                        final int type = upperCourse.getType();
-
-                        if (typeLits.contains(type)) {
-                        } else {
-                            typeLits.add(type);
-
-
-                            ImageView split = new ImageView(this);
-                            split.setId(2000 + upperCourse.getColumn() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getCid());
-                            split.setImageResource(R.mipmap.icon_close);
-                            RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
-                                    aveWidth / 4,
-                                    (gridHeight) / 4);
-                            //textview的位置由课程开始节数和上课的时间（day of week）确定
-                            rlp.topMargin = (upperCourse.getLessonfrom() - 1) * gridHeight + 10;
-                            rlp.leftMargin = 10;
-                            // 前面生成格子时的ID就是根据Day来设置的，偏移由这节课是星期几决定
-                            rlp.addRule(RelativeLayout.RIGHT_OF, upperCourse.getColumn());
-                            //字体居中中
-
-                            split.setLayoutParams(rlp);
-                            rlContent.addView(split);
-
-                            split.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //点击后 删除拼接的模块
-
-                                    Log.i("initTable", "删除拼接的模块"+type);
-
-                                mDBHelper.deleteByType(type);
-
-                                }
-                            });
-
-
-
-                        }
-                    }
-                }
+                showEditIcon();
 
 
                 break;
             case R.id.bt_clean:
                 mDBHelper.deleteAll();
+                initTable();
+                updataTelep();
                 break;
             default:
         }
     }
 
+    private void showEditIcon() {
+        for (Map.Entry<String, List<BigScreenBean>> entry : courseInfoMap.entrySet()) {
+            BigScreenBean upperCourse = null;
+            //list里保存的是一周内某 一天的课程
+            final List<BigScreenBean> list = new ArrayList<BigScreenBean>(entry.getValue());
+            for (int m = 0; m < list.size(); m++) {
+
+                upperCourse = list.get(m);
+
+                final int type = upperCourse.getType();
+                //只保留相同类型数据 在第一个item 显示叉号
+                if (typeLits.contains(type)) {
+
+                } else {
+                    typeLits.add(type);
 
 
+                    final ImageView split = new ImageView(this);
+                    split.setId((int) (2000 + upperCourse.getColumn() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getId()));
+                    split.setImageResource(R.mipmap.icon_close);
+
+
+                    RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                            aveWidth / 4,
+                            (gridHeight) / 4);
+                    //textview的位置由课程开始节数和上课的时间（day of week）确定
+                    rlp.topMargin = (upperCourse.getLessonfrom() - 1) * gridHeight + 10;
+                    rlp.leftMargin = 10;
+                    // 前面生成格子时的ID就是根据Day来设置的，偏移由这节课是星期几决定
+                    rlp.addRule(RelativeLayout.RIGHT_OF, upperCourse.getColumn());
+                    //字体居中中
+
+                    split.setLayoutParams(rlp);
+                    if (isEditAble) {
+                        rlContent.addView(split);
+                    }else {
+                        rlContent.removeView(split);
+                    }
+
+
+                    split.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //点击后 删除拼接的模块
+
+                            Log.i("initTable", "删除拼接的模块"+type);
+
+                        mDBHelper.deleteByType(type);
+                            rlContent.removeView(split);
+                            initTable();
+                            updataTelep();
+                            showEditIcon();
+                            updateEditState(true);
+
+                        }
+                    });
+
+
+
+                }
+            }
+        }
+    }
 
 
 }

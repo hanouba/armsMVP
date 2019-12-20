@@ -24,13 +24,11 @@ public class BigScreenBean {
     protected int lessonfrom;	// 开始行数  1--6
     protected int lessonto;	// 结束行数
     private String videoname; //视频名称
-    private String other;//扩展信息
-    @Index(unique = true)//设置唯一性
-    private int cid;		// id
+    private String other;//预案编号
+ 	// id
 
-    @Generated(hash = 1942516506)
-    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname, String other,
-            int cid) {
+    @Generated(hash = 486656636)
+    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname, String other) {
         this.id = id;
         this.type = type;
         this.column = column;
@@ -38,15 +36,13 @@ public class BigScreenBean {
         this.lessonto = lessonto;
         this.videoname = videoname;
         this.other = other;
-        this.cid = cid;
     }
 
-    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, int cid, String videoname, String other) {
+    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, String videoname, String other) {
         this.type = type;
         this.column = column;
         this.lessonfrom = lessonfrom;
         this.lessonto = lessonto;
-        this.cid = cid;
         this.videoname = videoname;
         this.other = other;
     }
@@ -83,12 +79,6 @@ public class BigScreenBean {
     }
     public void setLessonto(int lessonto) {
         this.lessonto = lessonto;
-    }
-    public int getCid() {
-        return this.cid;
-    }
-    public void setCid(int cid) {
-        this.cid = cid;
     }
     public String getVideoname() {
         return this.videoname;

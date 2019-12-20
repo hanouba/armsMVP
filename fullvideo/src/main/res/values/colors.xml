@@ -9,7 +9,13 @@
 
     <color name="courseTable1">#FF9800</color>
     <color name="courseTable2">#9C27B0</color>
-    <color name="courseTable3">#03A9F4</color>
+    <color name="courseTable3">#388BFD</color>
     <color name="courseTable4">#F44336</color>
     <color name="courseTable5">#8BC34A</color>
+    <color name="color_f1f3f5">#F1F3F5</color>
+    <color name="color_388BFD">#388BFD</color>
+    <color name="color_969696">#969696</color>
+    <color name="color_fafafa">#FAFAFA</color>
+    <color name="color_636363">#636363</color>
+    <color name="color_323232">#323232</color>
 </resources>

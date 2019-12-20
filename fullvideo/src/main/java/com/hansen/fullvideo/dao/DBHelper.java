@@ -42,7 +42,7 @@ public class DBHelper {
      * dao
      */
     private BigScreenBeanDao bigScreenBeanDao;
-    private SingleViewLocationDao singleViewLocationDao;
+
 
     private static DBHelper mDbController;
 
@@ -71,7 +71,6 @@ public class DBHelper {
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
         bigScreenBeanDao = mDaoSession.getBigScreenBeanDao();
-        singleViewLocationDao = mDaoSession.getSingleViewLocationDao();
     }
 
     /**
@@ -108,14 +107,6 @@ public class DBHelper {
         bigScreenBeanDao.insertOrReplace(bigScreenBean);
     }
 
-    /**
-     * 存入单个控件的位置信息
-     *
-     * @param singleViewLocation
-     */
-    public void insertOrReplaceSingleLocation(SingleViewLocation singleViewLocation) {
-        singleViewLocationDao.insertOrReplace(singleViewLocation);
-    }
 
     /**
      * 插入一条记录，表里面要没有与之相同的记录
@@ -156,6 +147,14 @@ public class DBHelper {
     }
 
     /**
+     * 查询对应预案编号的数据
+     */
+    public List<BigScreenBean> searchAllByTempIndex(String index) {
+        List<BigScreenBean> personInfors = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Other.eq(index)).build().list();
+        return personInfors;
+    }
+
+    /**
      * 根据type类型删除同type的数据
      */
     public void deleteByType(int type) {
@@ -163,6 +162,11 @@ public class DBHelper {
 
         bigScreenBeanDao.deleteInTx(bigScreenBeans);
 
+    }
+
+    public void setShowState(BigScreenBean bigScreenBean,String  state) {
+        bigScreenBean.setOther(state);
+        bigScreenBeanDao.update(bigScreenBean);
     }
 
     /**

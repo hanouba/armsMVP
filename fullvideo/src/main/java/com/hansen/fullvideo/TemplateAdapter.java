@@ -39,7 +39,8 @@ public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
         View view= LayoutInflater.from(getContext()).inflate(resourceId,parent,false);
         ImageView tempImage = (ImageView) view.findViewById(R.id.temp_image);
         TextView tempName =(TextView) view.findViewById(R.id.temp_name);
-        tempImage.setImageResource(templateBean.getImageId());
+
+        tempImage.setImageResource(R.mipmap.icon_temp_selected);
         tempName.setText(templateBean.getTextName());
         return view;
     }

@@ -8,6 +8,7 @@
     tools:context=".GreenActivity">
 
     <ListView
+        android:background="#FFF"
         android:id="@+id/lv_template"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -19,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="9"
-        android:background="@color/textBorder"
+        android:background="@color/color_fafafa"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -33,7 +34,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:text="实时预案查看"
-                android:textColor="@color/courseTable2"
+                android:textColor="@color/color_636363"
                 android:textSize="20sp" />
 
             <Button
@@ -43,8 +44,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
+                android:background="#FFF"
                 android:text="编辑"
-                android:textColor="@color/courseTable2"
+                android:textColor="@color/color_323232"
                 android:textSize="20sp" />
 
             <Button
@@ -52,11 +54,11 @@
                 android:id="@+id/bt_clean"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:background="#FFF"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:text="清理"
-                android:textColor="@color/courseTable2"
+                android:textColor="@color/color_323232"
                 android:textSize="20sp" />
 
         </RelativeLayout>
