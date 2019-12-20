@@ -50,7 +50,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private LinearLayout llContent;
     private LinearLayout llBigScreen;
     private RelativeLayout rlContentTitle;
-    private Button btEdit;
+    private Button btEdit,btClean;
 
     //课程信息，key为星期几，value是这一天的课程信息
     //key 是第几列，value是这一列的信息
@@ -119,6 +119,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         llContent = findViewById(R.id.ll_content);
         rlContentTitle = findViewById(R.id.rl_content_title);
         btEdit = findViewById(R.id.bt_edit);
+        btClean = findViewById(R.id.bt_clean);
         bscView = findViewById(R.id.bscv_view);
 
 
@@ -154,6 +155,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
     private void initListener() {
         btEdit.setOnClickListener(this);
+        btClean.setOnClickListener(this);
     }
 
     private void initData() {
@@ -258,12 +260,28 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                                     startRow = finalI;
                                     startColumn = finalJ-1;
                                 }else {
+
+                                    //先判断这个位置是否有覆盖
+                                    //根据所在列查出这一列的数据
                                     endRow = finalI;
                                     endColumn = finalJ-1;
                                     clickTimes = 0;
-                                    //将区间内的添加色块
+                                    if (endColumn >= startColumn) {
 
-                                    addColor();
+                                        checkSelectLocation(startColumn,endColumn,startRow,endRow);
+                                    }else {
+                                        int reprStartColumn = endColumn;
+                                        int reprEndColumn = startColumn;
+                                        int reprEndRow = startRow;
+                                        int reprStartRow = endRow;
+                                        //调换起点终点
+                                        checkSelectLocation(reprStartColumn,reprEndColumn,reprStartRow,reprEndRow);
+                                    }
+
+
+
+
+
 
                                 }
                                 break;
@@ -283,14 +301,57 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
     }
 
-    private void addColor() {
-        LogUtils.d("initTable","开始行--"+ startRow +"结束列--"+ endRow);
-        int selectColumn = endColumn - startColumn + 1;
+    private void checkSelectLocation(int startCol,int endCol,int startR,int endR) {
+        List<BigScreenBean> endBeans = mDBHelper.searchByColumm(endCol);
+        List<BigScreenBean> startBeans = mDBHelper.searchByColumm(startCol);
+        if (endBeans.size() > 0) {
+            //判断终点有数据
+            for (int k = 0; k < endBeans.size(); k++) {
+                BigScreenBean currentColumnData = endBeans.get(k);
+                if (currentColumnData.getLessonfrom() >  endR && currentColumnData.getLessonfrom() <= startR) {
+                    //终点下面有数据  起点在下方
+                    LogUtils.d("initTable","不可以选择");
+                }else if (currentColumnData.getLessonto() < endR  && currentColumnData.getLessonto()>= startR) {
+                    //终点上面有数据 起点在上方
+                    LogUtils.d("initTable","ye不可以选择");
+                }else {
+                    //终点有数据 起点在中间
+                    LogUtils.d("initTable","终点有数据--起点在中间");
+
+                    addColor(startCol,endCol,startR,endR);
+
+                }
+            }
+        }else {
+                //  终点没有数据 起点有数据
+
+            if (startBeans .size()> 0) {
+                //起点有数据
+                for (int n = 0; n < startBeans.size(); n++) {
+                    BigScreenBean currentStartColumnData = startBeans.get(n);
+                    if (currentStartColumnData.getLessonfrom() >  startR && currentStartColumnData.getLessonfrom() <= endR) {
+                        LogUtils.d("initTable","起点有数据不可以选择");
+                    }else if (currentStartColumnData.getLessonto() < startR  && currentStartColumnData.getLessonto()>= endR) {
+                        LogUtils.d("initTable","起点有数据ye不可以选择");
+                    }else {
+                        addColor(startCol,endCol,startR,endR);
+                    }
+                }
+            }else {
+                //起点没数据终点没数据
+                addColor(startCol,endCol,startR,endR);
+            }
+        }
+    }
+
+    private void addColor(int startCol,int endCol,int startR,int endR) {
+        LogUtils.d("initTable","addColor"+startCol,endCol,startR,endR);
+        int selectColumn = endCol - startCol + 1;
         int typeNum =(int) (Math.random( )*50+50) ;
 
         for (int i = 0; i < selectColumn; i++) {
             int cidNum =(int) (Math.random( )*1000) ;
-            mDBHelper.insert(new BigScreenBean(typeNum,startColumn+i,startRow,endRow,cidNum,"cctv"+typeNum,""));
+            mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,cidNum,"cctv"+typeNum,""));
         }
     }
 
@@ -522,6 +583,9 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                 }
 
 
+                break;
+            case R.id.bt_clean:
+                mDBHelper.deleteAll();
                 break;
             default:
         }

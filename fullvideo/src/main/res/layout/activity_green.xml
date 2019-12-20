@@ -47,6 +47,18 @@
                 android:textColor="@color/courseTable2"
                 android:textSize="20sp" />
 
+            <Button
+                android:layout_toLeftOf="@id/bt_edit"
+                android:id="@+id/bt_clean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:text="清理"
+                android:textColor="@color/courseTable2"
+                android:textSize="20sp" />
+
         </RelativeLayout>
 
         <FrameLayout

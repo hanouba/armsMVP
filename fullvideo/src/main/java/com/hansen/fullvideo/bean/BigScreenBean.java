@@ -20,8 +20,8 @@ public class BigScreenBean {
     @Id(autoincrement = true)//设置自增长
     private Long id;
     private int type;   //相同的数据类型
-    protected int column;			// 星期几上课 第几列
-    protected int lessonfrom;	// 开始行数
+    protected int column;			// 星期几上课 第几列  从0 --9
+    protected int lessonfrom;	// 开始行数  1--6
     protected int lessonto;	// 结束行数
     private String videoname; //视频名称
     private String other;//扩展信息
