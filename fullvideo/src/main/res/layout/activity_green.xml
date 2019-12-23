@@ -35,31 +35,32 @@
                 android:layout_marginLeft="20dp"
                 android:text="实时预案查看"
                 android:textColor="@color/color_636363"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/bt_edit"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:background="#FFF"
                 android:text="编辑"
                 android:textColor="@color/color_323232"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <Button
                 android:layout_toLeftOf="@id/bt_edit"
                 android:id="@+id/bt_clean"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:background="#FFF"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
                 android:text="清理"
+                android:visibility="gone"
                 android:textColor="@color/color_323232"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
         </RelativeLayout>
 

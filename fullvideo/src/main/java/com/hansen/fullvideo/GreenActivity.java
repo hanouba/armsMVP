@@ -1,7 +1,9 @@
 package com.hansen.fullvideo;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,7 +24,9 @@ import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.DBHelper;
 import com.hansen.fullvideo.ui.BigScreenControlView;
+import com.hansen.fullvideo.ui.CommonDialog;
 import com.hansen.fullvideo.utils.LogUtils;
+import com.hansen.fullvideo.utils.Utils;
 
 import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
@@ -33,8 +37,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-public class GreenActivity extends AppCompatActivity  implements View.OnClickListener  {
+public class GreenActivity extends AppCompatActivity implements View.OnClickListener {
     protected int aveWidth;//课程格子平均宽度
     protected int screenWidth;//屏幕宽度
     protected int gridHeight = 80;//格子高度
@@ -53,7 +58,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private LinearLayout llContent;
     private LinearLayout llBigScreen;
     private RelativeLayout rlContentTitle;
-    private Button btEdit,btClean;
+    private Button btEdit, btClean;
 
     //课程信息，key为星期几，value是这一天的课程信息
     //key 是第几列，value是这一列的信息
@@ -72,7 +77,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     //空白小块被选择的次数
     private int clickTimes = 0;
     //编辑状态
-    private int editClick=0;
+    private int editClick = 0;
 
 
     private List<Integer> typeLits = new ArrayList<>();
@@ -89,6 +94,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     //默认预案编号 1
     private int currentTemp = 1;
     private TemplateAdapter templateAdapter;
+    private CommonDialog mDialog;
 
 
     @Override
@@ -118,6 +124,8 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         initCourse();
         //显示课表内容
         initCourseTableBody();
+        typeLits.clear();
+        showEditIcon();
 
 
 
@@ -125,13 +133,14 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
     /**
      * 更新编辑状态
+     *
      * @param b
      */
     private void updateEditState(boolean b) {
         isEditAble = b;
         if (isEditAble) {
-            btEdit.setText("取消");
-        }else {
+            btEdit.setText("保存");
+        } else {
             btEdit.setText("编辑");
         }
 
@@ -146,8 +155,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         initListener();
 
         initData();
-
-
+        mDialog = new CommonDialog(GreenActivity.this);
     }
 
     private void initView() {
@@ -168,7 +176,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     }
 
     private void initData() {
-        Log.i("initTable", "initData" );
+        Log.i("initTable", "initData");
         textviewCourseInfoMap = new HashMap<Integer, List<BigScreenBean>>();
 
         List<TemplateBean> tempLists = new ArrayList<>();
@@ -188,7 +196,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         lvTemplate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                currentTemp = position +1;
+                currentTemp = position + 1;
                 bigScreenBeans.clear();
                 bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
                 updataTelep();
@@ -198,10 +206,6 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
             }
         });
     }
-
-
-
-
 
 
     /**
@@ -217,7 +221,6 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
         contentTop = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getTop();
         int bottom = rlContent.getTop() + rlContentTitle.getTop() + llBigScreen.getBottom();
-
 
 
         //屏幕宽度
@@ -269,7 +272,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
                 final int finalI = i;
                 final int finalJ = j;
-//                选择控件区域
+                //                选择控件区域
                 tx.setOnTouchListener(new View.OnTouchListener() {
 
 
@@ -278,38 +281,54 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 if (isEditAble) {
-                                clickTimes ++;
-                                if (clickTimes == 1) {
-                                    startRow = finalI;
-                                    startColumn = finalJ-1;
-                                }else {
+                                    clickTimes++;
+                                    if (clickTimes == 1) {
+                                        startRow = finalI;
+                                        startColumn = finalJ - 1;
+                                    } else {
 
-                                    //先判断这个位置是否有覆盖
-                                    //根据所在列查出这一列的数据
-                                    endRow = finalI;
-                                    endColumn = finalJ-1;
-                                    clickTimes = 0;
-                                    if ((startRow == endRow) || (startColumn == endColumn)) {
-                                        LogUtils.d("同一行或者同一列不实现");
-                                    }else {
-                                        if (endColumn > startColumn) {
+                                        //先判断这个位置是否有覆盖
+                                        //根据所在列查出这一列的数据
+                                        endRow = finalI;
+                                        endColumn = finalJ - 1;
+                                        clickTimes = 0;
+                                        if ((startRow == endRow) || (startColumn == endColumn)) {
+                                            LogUtils.d("同一行或者同一列不实现");
+                                        } else {
+                                            if (endColumn > startColumn) {
 
-                                            checkSelectLocation(startColumn,endColumn,startRow,endRow);
-                                        }else {
-                                            int reprStartColumn = endColumn;
-                                            int reprEndColumn = startColumn;
-                                            int reprEndRow = startRow;
-                                            int reprStartRow = endRow;
-                                            //调换起点终点
-                                            checkSelectLocation(reprStartColumn,reprEndColumn,reprStartRow,reprEndRow);
+                                                checkSelectLocation(startColumn, endColumn, startRow, endRow);
+                                            } else {
+                                                int reprStartColumn = endColumn;
+                                                int reprEndColumn = startColumn;
+                                                int reprEndRow = startRow;
+                                                int reprStartRow = endRow;
+                                                //调换起点终点
+                                                checkSelectLocation(reprStartColumn, reprEndColumn, reprStartRow, reprEndRow);
+                                            }
+
                                         }
 
+
                                     }
+                                } else {
+                                    LogUtils.d("initTable", "不可编辑");
 
+                                    mDialog.setMessage("请先点击编辑")
+                                            .setTitle("提示")
+                                            .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                                        @Override
+                                        public void onPositiveClick() {
+                                            mDialog.dismiss();
+                                        }
 
-                                }
-                                }else {
-                                    LogUtils.d("initTable","不可编辑");
+                                        @Override
+                                        public void onNegtiveClick() {
+                                            mDialog.dismiss();
+
+                                        }
+                                    }).show();
+
                                 }
                                 break;
 
@@ -328,59 +347,59 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
     }
 
-    private void checkSelectLocation(int startCol,int endCol,int startR,int endR) {
-        List<BigScreenBean> endBeans = mDBHelper.searchByColumm(endCol,currentTemp);
-        List<BigScreenBean> startBeans = mDBHelper.searchByColumm(startCol,currentTemp);
+    private void checkSelectLocation(int startCol, int endCol, int startR, int endR) {
+        List<BigScreenBean> endBeans = mDBHelper.searchByColumm(endCol, currentTemp);
+        List<BigScreenBean> startBeans = mDBHelper.searchByColumm(startCol, currentTemp);
         if (endBeans.size() > 0) {
             //判断终点有数据
             for (int k = 0; k < endBeans.size(); k++) {
                 BigScreenBean currentColumnData = endBeans.get(k);
-                if (currentColumnData.getLessonfrom() >  endR && currentColumnData.getLessonfrom() <= startR) {
+                if (currentColumnData.getLessonfrom() > endR && currentColumnData.getLessonfrom() <= startR) {
                     //终点下面有数据  起点在下方
-                    LogUtils.d("initTable","不可以选择");
-                }else if (currentColumnData.getLessonto() < endR  && currentColumnData.getLessonto()>= startR) {
+                    LogUtils.d("initTable", "不可以选择");
+                } else if (currentColumnData.getLessonto() < endR && currentColumnData.getLessonto() >= startR) {
                     //终点上面有数据 起点在上方
-                    LogUtils.d("initTable","ye不可以选择");
-                }else {
+                    LogUtils.d("initTable", "ye不可以选择");
+                } else {
                     //终点有数据 起点在中间
-                    LogUtils.d("initTable","终点有数据--起点在中间");
+                    LogUtils.d("initTable", "终点有数据--起点在中间");
 
-                    addColor(startCol,endCol,startR,endR);
+                    addColor(startCol, endCol, startR, endR);
 
                 }
             }
-        }else {
-                //  终点没有数据 起点有数据
+        } else {
+            //  终点没有数据 起点有数据
 
-            if (startBeans .size()> 0) {
+            if (startBeans.size() > 0) {
                 //起点有数据
                 for (int n = 0; n < startBeans.size(); n++) {
                     BigScreenBean currentStartColumnData = startBeans.get(n);
-                    if (currentStartColumnData.getLessonfrom() >  startR && currentStartColumnData.getLessonfrom() <= endR) {
-                        LogUtils.d("initTable","起点有数据不可以选择");
-                    }else if (currentStartColumnData.getLessonto() < startR  && currentStartColumnData.getLessonto()>= endR) {
-                        LogUtils.d("initTable","起点有数据ye不可以选择");
-                    }else {
-                        addColor(startCol,endCol,startR,endR);
+                    if (currentStartColumnData.getLessonfrom() > startR && currentStartColumnData.getLessonfrom() <= endR) {
+                        LogUtils.d("initTable", "起点有数据不可以选择");
+                    } else if (currentStartColumnData.getLessonto() < startR && currentStartColumnData.getLessonto() >= endR) {
+                        LogUtils.d("initTable", "起点有数据ye不可以选择");
+                    } else {
+                        addColor(startCol, endCol, startR, endR);
                     }
                 }
-            }else {
+            } else {
                 //起点没数据终点灭
-                addColor(startCol,endCol,startR,endR);
+                addColor(startCol, endCol, startR, endR);
             }
         }
     }
 
-    private void addColor(int startCol,int endCol,int startR,int endR) {
-        LogUtils.d("initTable","addColor"+startCol,endCol,startR,endR);
+    private void addColor(int startCol, int endCol, int startR, int endR) {
+        LogUtils.d("initTable", "addColor" + startCol, endCol, startR, endR);
         int selectColumn = endCol - startCol + 1;
-        int typeNum =(int) (Math.random( )*500+50) ;
+        int typeNum = (int) (Math.random() * 500 + 50);
 
         for (int i = 0; i < selectColumn; i++) {
             if (startR > endR) {
-                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,endR,startR,"cctv"+typeNum,currentTemp));
-            }else {
-                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,"cctv"+typeNum,currentTemp));
+                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, endR, startR, "cctv" + typeNum, currentTemp));
+            } else {
+                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, startR, endR, "cctv" + typeNum, currentTemp));
             }
 
         }
@@ -461,7 +480,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     //五种颜色的背景
                     int[] background = {R.drawable.main_course1, R.drawable.main_course2,
                             R.drawable.main_course3, R.drawable.main_course4,
-                            R.drawable.main_course5,R.drawable.main_course6, R.drawable.main_course7,
+                            R.drawable.main_course5, R.drawable.main_course6, R.drawable.main_course7,
                             R.drawable.main_course8, R.drawable.main_course9,
                             R.drawable.main_course10};
                     //记录顶层课程在cInfoList中的索引位置
@@ -471,7 +490,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     courseInfo.setId((int) (1000 + upperCourse.getColumn() * 100 + upperCourse.getLessonfrom() * 10 + upperCourse.getId()));//设置id区分不同课程
                     int id = courseInfo.getId();
                     textviewCourseInfoMap.put(id, cInfoList);
-                    courseInfo.setText(upperCourse.getVideoname() + "\n@" +"其他信息");
+                    courseInfo.setText("");
                     //该textview的高度根据其节数的跨度来设置
                     RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
                             aveWidth,
@@ -564,20 +583,20 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         switch (v.getId()) {
             case R.id.bt_edit:
 
-                editClick ++;
+                editClick++;
                 if (editClick % 2 == 0) {
                     typeLits.clear();
-                    updataTelep();
                     updateEditState(false);
+                    updataTelep();
 
-                }else {
+                } else {
                     typeLits.clear();
                     updateEditState(true);
+                    showEditIcon();
                 }
                 Log.i("initTable", "bt_edit");
                 //                编辑 显示 叉号  并且可以滑动加载新的模板
-                //1 拼接咋一起的 显示一个叉号
-                showEditIcon();
+
 
 
                 break;
@@ -625,7 +644,7 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     split.setLayoutParams(rlp);
                     if (isEditAble) {
                         rlContent.addView(split);
-                    }else {
+                    } else {
                         rlContent.removeView(split);
                     }
 
@@ -635,24 +654,41 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                         public void onClick(View v) {
                             //点击后 删除拼接的模块
 
-                            Log.i("initTable", "删除拼接的模块"+type);
 
-                        mDBHelper.deleteByType(type);
-                            rlContent.removeView(split);
-                            initTable();
-                            updataTelep();
-                            showEditIcon();
-                            updateEditState(true);
+                            mDialog.setMessage("是否删除")
+                                    .setTitle("提示")
+                                    .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                                @Override
+                                public void onPositiveClick() {
+                                    mDialog.dismiss();
+                                    mDBHelper.deleteByType(type);
+                                    rlContent.removeView(split);
+                                    initTable();
+                                    updataTelep();
+                                    updateEditState(true);
+                                    typeLits.clear();
+                                    showEditIcon();
+                                }
+
+                                @Override
+                                public void onNegtiveClick() {
+                                    mDialog.dismiss();
+
+                                }
+                            }).show();
+
+
 
                         }
                     });
-
 
 
                 }
             }
         }
     }
+
+
 
 
 }

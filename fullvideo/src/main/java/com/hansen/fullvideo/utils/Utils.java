@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.annotation.StringRes;
 import android.view.View;
+import android.widget.Toast;
+
+import com.hansen.fullvideo.GreenActivity;
+import com.hansen.fullvideo.ui.CommonDialog;
 
 /**
  * Date  : 2017-05-11
@@ -80,4 +84,5 @@ public final class Utils {
     public static boolean isAppDebug() {
         return AppUtils.isAppDebug();
     }
+
 }
