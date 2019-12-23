@@ -12,10 +12,16 @@
     <color name="courseTable3">#388BFD</color>
     <color name="courseTable4">#F44336</color>
     <color name="courseTable5">#8BC34A</color>
+    <color name="courseTable6">#8ddddA</color>
+    <color name="courseTable7">#00585a</color>
+    <color name="courseTable8">#8aa8fc</color>
+    <color name="courseTable9">#b88449</color>
+    <color name="courseTable10">#afd8dd</color>
     <color name="color_f1f3f5">#F1F3F5</color>
     <color name="color_388BFD">#388BFD</color>
     <color name="color_969696">#969696</color>
     <color name="color_fafafa">#FAFAFA</color>
     <color name="color_636363">#636363</color>
     <color name="color_323232">#323232</color>
+    <color name="color_d1e3ff">#D1E3FF</color>
 </resources>

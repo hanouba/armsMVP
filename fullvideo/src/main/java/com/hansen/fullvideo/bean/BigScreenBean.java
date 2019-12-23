@@ -24,72 +24,106 @@ public class BigScreenBean {
     protected int lessonfrom;	// 开始行数  1--6
     protected int lessonto;	// 结束行数
     private String videoname; //视频名称
-    private String other;//预案编号
+    private int tempType;//预案编号
  	// id
 
-    @Generated(hash = 486656636)
-    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname, String other) {
+
+    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, String videoname, int tempType) {
+        this.type = type;
+        this.column = column;
+        this.lessonfrom = lessonfrom;
+        this.lessonto = lessonto;
+        this.videoname = videoname;
+        this.tempType = tempType;
+    }
+
+
+    @Generated(hash = 1779582477)
+    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname,
+            int tempType) {
         this.id = id;
         this.type = type;
         this.column = column;
         this.lessonfrom = lessonfrom;
         this.lessonto = lessonto;
         this.videoname = videoname;
-        this.other = other;
+        this.tempType = tempType;
     }
 
-    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, String videoname, String other) {
-        this.type = type;
-        this.column = column;
-        this.lessonfrom = lessonfrom;
-        this.lessonto = lessonto;
-        this.videoname = videoname;
-        this.other = other;
-    }
 
     @Generated(hash = 275093853)
     public BigScreenBean() {
     }
+
+
     public Long getId() {
         return this.id;
     }
+
+
     public void setId(Long id) {
         this.id = id;
     }
+
+
     public int getType() {
         return this.type;
     }
+
+
     public void setType(int type) {
         this.type = type;
     }
+
+
     public int getColumn() {
         return this.column;
     }
+
+
     public void setColumn(int column) {
         this.column = column;
     }
+
+
     public int getLessonfrom() {
         return this.lessonfrom;
     }
+
+
     public void setLessonfrom(int lessonfrom) {
         this.lessonfrom = lessonfrom;
     }
+
+
     public int getLessonto() {
         return this.lessonto;
     }
+
+
     public void setLessonto(int lessonto) {
         this.lessonto = lessonto;
     }
+
+
     public String getVideoname() {
         return this.videoname;
     }
+
+
     public void setVideoname(String videoname) {
         this.videoname = videoname;
     }
-    public String getOther() {
-        return this.other;
+
+
+    public int getTempType() {
+        return this.tempType;
     }
-    public void setOther(String other) {
-        this.other = other;
+
+
+    public void setTempType(int tempType) {
+        this.tempType = tempType;
     }
+
+ 
 }

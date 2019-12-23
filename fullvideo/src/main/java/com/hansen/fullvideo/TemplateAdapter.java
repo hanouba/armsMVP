@@ -1,5 +1,6 @@
 package com.hansen.fullvideo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -25,12 +26,14 @@ import java.util.List;
  */
 public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
     private int resourceId;
-
+    private int selected = -1;
+    private int firstCreate = 0;
     public TemplateAdapter(Context context, int textViewResourceId, List<TemplateBean> objects){
         super(context,textViewResourceId,objects);
         resourceId = textViewResourceId;
 
     }
+
 
 
     @Override
@@ -39,9 +42,33 @@ public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
         View view= LayoutInflater.from(getContext()).inflate(resourceId,parent,false);
         ImageView tempImage = (ImageView) view.findViewById(R.id.temp_image);
         TextView tempName =(TextView) view.findViewById(R.id.temp_name);
-
-        tempImage.setImageResource(R.mipmap.icon_temp_selected);
         tempName.setText(templateBean.getTextName());
+
+
+
+
+
+        if(selected==position){
+            tempImage.setImageResource(R.mipmap.icon_temp_selected);  //选中项背景
+            tempName.setTextColor(getContext().getResources().getColor(R.color.color_388BFD));
+        }else{
+
+                tempImage.setImageResource(R.mipmap.icon_temp_unselected);  //其它项背景
+                tempName.setTextColor(getContext().getResources().getColor(R.color.color_969696));
+
+
+        }
+
+
         return view;
     }
+
+    public void setSelected(int selectPostions) {
+        if(selected != selectPostions){
+            selected = selectPostions;
+            notifyDataSetChanged();
+        }
+    }
+
+
 }

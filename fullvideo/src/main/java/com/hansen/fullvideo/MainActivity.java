@@ -73,25 +73,25 @@ public class MainActivity extends AppCompatActivity{
      * 创建预案数据
      */
     private void createLocalData() {
-        BigScreenBean bigScreenBean1 = new BigScreenBean(0,0,1,2,"cctv-1","1");
-        BigScreenBean bigScreenBean2 = new BigScreenBean(0,1,1,2,"cctv-1","1");
+        BigScreenBean bigScreenBean1 = new BigScreenBean(0,0,1,2,"cctv-1",1);
+        BigScreenBean bigScreenBean2 = new BigScreenBean(0,1,1,2,"cctv-1",1);
 
-        BigScreenBean bigScreenBean3 = new BigScreenBean(1,0,3,4,"cctv-2","1");
-        BigScreenBean bigScreenBean4 = new BigScreenBean(1,1,3,4,"cctv-2","1");
+        BigScreenBean bigScreenBean3 = new BigScreenBean(1,0,3,4,"cctv-2",1);
+        BigScreenBean bigScreenBean4 = new BigScreenBean(1,1,3,4,"cctv-2",1);
 
-        BigScreenBean bigScreenBean5 = new BigScreenBean(2,0,5,6,"cctv-3","2");
-        BigScreenBean bigScreenBean6 = new BigScreenBean(2,1,5,6,"cctv-3","2");
+        BigScreenBean bigScreenBean5 = new BigScreenBean(2,0,5,6,"cctv-3",2);
+        BigScreenBean bigScreenBean6 = new BigScreenBean(2,1,5,6,"cctv-3",2);
 
-        BigScreenBean bigScreenBean7 = new BigScreenBean(3,6,1,4,"cctv-4","2");
-        BigScreenBean bigScreenBean8 = new BigScreenBean(3,7,1,4,"cctv-4","2");
-        BigScreenBean bigScreenBean9 = new BigScreenBean(3,8,1,4,"cctv-4","2");
-        BigScreenBean bigScreenBean10 = new BigScreenBean(3,9,1,4,"cctv-4","2");
+        BigScreenBean bigScreenBean7 = new BigScreenBean(3,6,1,4,"cctv-4",2);
+        BigScreenBean bigScreenBean8 = new BigScreenBean(3,7,1,4,"cctv-4",2);
+        BigScreenBean bigScreenBean9 = new BigScreenBean(3,8,1,4,"cctv-4",2);
+        BigScreenBean bigScreenBean10 = new BigScreenBean(3,9,1,4,"cctv-4",2);
 
-        BigScreenBean bigScreenBean11 = new BigScreenBean(4,2,1,2,"cctv-5","3");
-        BigScreenBean bigScreenBean12 = new BigScreenBean(4,3,1,2,"cctv-5","3");
+        BigScreenBean bigScreenBean11 = new BigScreenBean(4,2,1,2,"cctv-5",3);
+        BigScreenBean bigScreenBean12 = new BigScreenBean(4,3,1,2,"cctv-5",3);
 
-        BigScreenBean bigScreenBean13 = new BigScreenBean(5,2,5,6,"cctv-6","3");
-        BigScreenBean bigScreenBean14 = new BigScreenBean(5,3,5,6,"cctv-6","3");
+        BigScreenBean bigScreenBean13 = new BigScreenBean(5,2,5,6,"cctv-6",3);
+        BigScreenBean bigScreenBean14 = new BigScreenBean(5,3,5,6,"cctv-6",3);
 
 
         mDBHelper.insertOrReplace(bigScreenBean1);

@@ -86,6 +86,10 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     private int endColumn;
     private boolean isEditAble;
 
+    //默认预案编号 1
+    private int currentTemp = 1;
+    private TemplateAdapter templateAdapter;
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -109,7 +113,8 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
      */
     private void updataTelep() {
         bigScreenBeans.clear();
-        bigScreenBeans = mDBHelper.searchAllByTempIndex("1");
+        bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
+        initTable();
         initCourse();
         //显示课表内容
         initCourseTableBody();
@@ -174,18 +179,22 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
         }
 
 
-        TemplateAdapter templateAdapter = new TemplateAdapter(this, R.layout.item_template, tempLists);
+        templateAdapter = new TemplateAdapter(this, R.layout.item_template, tempLists);
 
         lvTemplate.setAdapter(templateAdapter);
-
-        bigScreenBeans = mDBHelper.searchAllByTempIndex("1");
+        templateAdapter.setSelected(0);
+        bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
 
         lvTemplate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                bigScreenBeans = mDBHelper.searchAllByTempIndex(position+"1");
+                currentTemp = position +1;
+                bigScreenBeans.clear();
+                bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
                 updataTelep();
                 updateEditState(false);
+                templateAdapter.setSelected(position);
+
             }
         });
     }
@@ -320,8 +329,8 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
     }
 
     private void checkSelectLocation(int startCol,int endCol,int startR,int endR) {
-        List<BigScreenBean> endBeans = mDBHelper.searchByColumm(endCol);
-        List<BigScreenBean> startBeans = mDBHelper.searchByColumm(startCol);
+        List<BigScreenBean> endBeans = mDBHelper.searchByColumm(endCol,currentTemp);
+        List<BigScreenBean> startBeans = mDBHelper.searchByColumm(startCol,currentTemp);
         if (endBeans.size() > 0) {
             //判断终点有数据
             for (int k = 0; k < endBeans.size(); k++) {
@@ -369,9 +378,9 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
 
         for (int i = 0; i < selectColumn; i++) {
             if (startR > endR) {
-                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,endR,startR,"cctv"+typeNum,""));
+                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,endR,startR,"cctv"+typeNum,currentTemp));
             }else {
-                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,"cctv"+typeNum,""));
+                mDBHelper.insert(new BigScreenBean(typeNum,startCol+i,startR,endR,"cctv"+typeNum,currentTemp));
             }
 
         }
@@ -452,9 +461,9 @@ public class GreenActivity extends AppCompatActivity  implements View.OnClickLis
                     //五种颜色的背景
                     int[] background = {R.drawable.main_course1, R.drawable.main_course2,
                             R.drawable.main_course3, R.drawable.main_course4,
-                            R.drawable.main_course5,R.drawable.main_course1, R.drawable.main_course2,
-                            R.drawable.main_course3, R.drawable.main_course4,
-                            R.drawable.main_course5};
+                            R.drawable.main_course5,R.drawable.main_course6, R.drawable.main_course7,
+                            R.drawable.main_course8, R.drawable.main_course9,
+                            R.drawable.main_course10};
                     //记录顶层课程在cInfoList中的索引位置
                     final int upperCourseIndex = index;
                     // 动态生成课程信息TextView

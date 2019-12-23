@@ -149,8 +149,8 @@ public class DBHelper {
     /**
      * 查询对应预案编号的数据
      */
-    public List<BigScreenBean> searchAllByTempIndex(String index) {
-        List<BigScreenBean> personInfors = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Other.eq(index)).build().list();
+    public List<BigScreenBean> searchAllByTempIndex(int index) {
+        List<BigScreenBean> personInfors = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.TempType.eq(index)).build().list();
         return personInfors;
     }
 
@@ -164,18 +164,19 @@ public class DBHelper {
 
     }
 
-    public void setShowState(BigScreenBean bigScreenBean,String  state) {
-        bigScreenBean.setOther(state);
+    public void setShowState(BigScreenBean bigScreenBean,int  state) {
+        bigScreenBean.setTempType(state);
         bigScreenBeanDao.update(bigScreenBean);
     }
 
     /**
+     * 统一预案下的同一列有多少数据
      * 查询当前列的数据
      *
      * @param column
      */
-    public List<BigScreenBean> searchByColumm(int column) {
-        List<BigScreenBean> bigScreenBeans = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Column.eq(column)).build().list();
+    public List<BigScreenBean> searchByColumm(int column,int tempType) {
+        List<BigScreenBean> bigScreenBeans = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.Column.eq(column),BigScreenBeanDao.Properties.TempType.eq(tempType)).build().list();
 
         return bigScreenBeans;
 
