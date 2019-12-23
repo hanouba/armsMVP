@@ -246,7 +246,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 tx.setId((i - 1) * columnNum + j);
                 //相对布局参数
                 RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
-                        aveWidth * 32 / 32 + 1,
+                        aveWidth * 32 / 32,
                         gridHeight);
                 //文字对齐方式
                 tx.setGravity(Gravity.CENTER);

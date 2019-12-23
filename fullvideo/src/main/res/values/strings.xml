@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">fullvideo</string>
+    <string name="app_name">大屏控制客户端</string>
+    <string name="sytem_login">系统登录</string>
     <string name="camera_and_location_rationale">camera_and_location_rationale</string>
 </resources>

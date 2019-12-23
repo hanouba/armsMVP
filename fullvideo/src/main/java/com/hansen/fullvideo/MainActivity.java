@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void openOld(View view) {
-        Intent intent = new Intent(this,OldActivity.class);
+        Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
     }
 }
