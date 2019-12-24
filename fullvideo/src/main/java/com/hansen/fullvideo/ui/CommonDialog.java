@@ -89,8 +89,8 @@ public class CommonDialog extends Dialog {
             public void onClick(View v) {
                 if ( onClickBottomListener!= null) {
                     String string = messageTv.getText().toString();
-                    LogUtils.d("修改后的名称"+string);
-                    onClickBottomListener.onPositiveClick();
+
+                    onClickBottomListener.onPositiveClick(string);
                 }
             }
         });
@@ -179,7 +179,7 @@ public class CommonDialog extends Dialog {
         /**
          * 点击确定按钮事件
          */
-        public void onPositiveClick();
+        public void onPositiveClick(String name);
         /**
          * 点击取消按钮事件
          */

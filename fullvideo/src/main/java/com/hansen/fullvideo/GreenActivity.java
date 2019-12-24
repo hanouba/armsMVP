@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -114,6 +115,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
     private final MyHandler myHandler = new MyHandler(this);
     private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         Log.i("initTable", "onWindowFocusChanged" + hasFocus);
@@ -145,7 +147,6 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         showEditIcon();
 
 
-
     }
 
     /**
@@ -170,7 +171,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         mDBHelper = DBHelper.getInstance(GreenActivity.this);
         initView();
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
-        registerReceiver(myBroadcastReceiver,intentFilter);
+        registerReceiver(myBroadcastReceiver, intentFilter);
         initListener();
         initTCP();
         initData();
@@ -211,7 +212,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         textviewCourseInfoMap = new HashMap<Integer, List<BigScreenBean>>();
 
         List<String> tempNames = new ArrayList<>();
-        List<BigScreenBean>  allBigScreens = mDBHelper.searchAll();
+        List<BigScreenBean> allBigScreens = mDBHelper.searchAll();
         for (int i = 0; i < allBigScreens.size(); i++) {
             String tempName = allBigScreens.get(i).getTempName();
             tempNames.add(tempName);
@@ -219,16 +220,17 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         List tempNameList = repeatListWayThird(tempNames);
 
         currentTempName = allBigScreens.get(0).getTempName();
-        templateAdapter = new TemplateAdapter(this, R.layout.item_template, tempNameList);
+        templateAdapter = new TemplateAdapter(this,R.layout.item_template,tempNameList);
 
         lvTemplate.setAdapter(templateAdapter);
         templateAdapter.setSelected(0);
         bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
 
+
         lvTemplate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                currentTemp = position ;
+                currentTemp = position;
                 bigScreenBeans.clear();
                 bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
                 currentTempName = bigScreenBeans.get(position).getTempName();
@@ -239,31 +241,37 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        lvTemplate.setOnLongClickListener(new View.OnLongClickListener() {
+        lvTemplate.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                LogUtils.d("是否修改预案名称");
-//                mDialog.setMessage("是否修改预案名称?")
-//                        .setTitle("提示")
-//                        .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
-//                    @Override
-//                    public void onPositiveClick() {
-//                        mDialog.dismiss();
-//
-//                    }
-//
-//                    @Override
-//                    public void onNegtiveClick() {
-//                        mDialog.dismiss();
-//
-//                    }
-//                }).show();
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
+                mDialog.setMessage("")
+                        .setTitle("编辑预案名称")
+                        .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick(String name) {
+                        mDialog.dismiss();
+                        List<BigScreenBean> sameTempS = mDBHelper.searchAllByTempIndex(currentTemp);
+                        for (int i = 0; i <sameTempS.size(); i++) {
 
-                return true;
+                            mDBHelper.setTempName(sameTempS.get(i),name);
+                        }
+
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {
+                        mDialog.dismiss();
+
+                    }
+                }).show();
+                return false;
             }
+
+
         });
     }
+
     public List repeatListWayThird(List<String> list) {
 
         TreeSet set = new TreeSet(list);
@@ -383,7 +391,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                                             .setTitle("提示")
                                             .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                                         @Override
-                                        public void onPositiveClick() {
+                                        public void onPositiveClick(String name) {
                                             mDialog.dismiss();
                                         }
 
@@ -462,9 +470,9 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
         for (int i = 0; i < selectColumn; i++) {
             if (startR > endR) {
-                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, endR, startR, "cctv" + typeNum, currentTemp,currentTempName));
+                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, endR, startR, "cctv" + typeNum, currentTemp, currentTempName));
             } else {
-                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, startR, endR, "cctv" + typeNum, currentTemp,currentTempName));
+                mDBHelper.insert(new BigScreenBean(typeNum, startCol + i, startR, endR, "cctv" + typeNum, currentTemp, currentTempName));
             }
 
         }
@@ -663,7 +671,6 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 //                编辑 显示 叉号  并且可以滑动加载新的模板
 
 
-
                 break;
             case R.id.bt_clean:
                 mDBHelper.deleteByTempType(currentTemp);
@@ -674,7 +681,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 exec.execute(new Runnable() {
                     @Override
                     public void run() {
-                        tcpClient.send("<call,"+currentTemp+",0>");
+                        tcpClient.send("<call," + currentTemp + ",0>");
                     }
                 });
                 break;
@@ -732,7 +739,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                                     .setTitle("提示")
                                     .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                                 @Override
-                                public void onPositiveClick() {
+                                public void onPositiveClick(String name) {
                                     mDialog.dismiss();
                                     mDBHelper.deleteByType(type);
                                     rlContent.removeView(split);
@@ -751,7 +758,6 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                             }).show();
 
 
-
                         }
                     });
 
@@ -761,24 +767,24 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private class MyHandler extends android.os.Handler{
+    private class MyHandler extends android.os.Handler {
         private WeakReference<GreenActivity> mActivity;
 
-        MyHandler(GreenActivity activity){
+        MyHandler(GreenActivity activity) {
             mActivity = new WeakReference<GreenActivity>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            if (mActivity != null){
-                switch (msg.what){
+            if (mActivity != null) {
+                switch (msg.what) {
                     case 1:
 
                         mDialog.setMessage("服务连接失败,重新连接")
                                 .setTitle("提示")
                                 .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                             @Override
-                            public void onPositiveClick() {
+                            public void onPositiveClick(String name) {
                                 mDialog.dismiss();
 
                                 initTCP();
@@ -802,7 +808,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
-            switch (mAction){
+            switch (mAction) {
                 case "tcpClientReceiver":
                     Message message = Message.obtain();
                     message.what = 1;
@@ -811,7 +817,6 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
 
 
 }

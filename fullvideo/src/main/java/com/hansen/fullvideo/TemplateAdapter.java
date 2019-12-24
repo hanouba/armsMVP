@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hansen.fullvideo.bean.TemplateBean;
 
 import java.util.List;
 
@@ -25,16 +24,18 @@ import java.util.List;
  * @updateremark:
  * @version: 2.1.67
  */
-public class TemplateAdapter extends ArrayAdapter<String> {
+public class TemplateAdapter extends ArrayAdapter<String>  {
+
     private int resourceId;
     private int selected = -1;
-
+    private int firstCreate = 0;
 
     public TemplateAdapter(Context context, int textViewResourceId, List<String> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
 
     }
+
 
 
     @Override
@@ -46,17 +47,16 @@ public class TemplateAdapter extends ArrayAdapter<String> {
         tempName.setText(temName);
 
 
-        if (selected == position) {
-            tempImage.setImageResource(R.mipmap.icon_temp_selected);  //选中项背景
-            tempName.setTextColor(getContext().getResources().getColor(R.color.color_388BFD));
-        } else {
+                if (selected == position) {
+                    tempImage.setImageResource(R.mipmap.icon_temp_selected);  //选中项背景
+                    tempName.setTextColor(getContext().getResources().getColor(R.color.color_388BFD));
+                } else {
 
-            tempImage.setImageResource(R.mipmap.icon_temp_unselected);  //其它项背景
-            tempName.setTextColor(getContext().getResources().getColor(R.color.color_969696));
+                    tempImage.setImageResource(R.mipmap.icon_temp_unselected);  //其它项背景
+                    tempName.setTextColor(getContext().getResources().getColor(R.color.color_969696));
 
 
-        }
-
+                }
 
         return view;
     }

@@ -181,6 +181,16 @@ public class DBHelper {
     }
 
     /**
+     * 更新预案名称
+     * @param bigScreenBean
+     * @param name
+     */
+    public void setTempName(BigScreenBean bigScreenBean,String  name) {
+        bigScreenBean.setTempName(name);
+        bigScreenBeanDao.update(bigScreenBean);
+    }
+
+    /**
      * 统一预案下的同一列有多少数据
      * 查询当前列的数据
      *
