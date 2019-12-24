@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hansen.fullvideo.R;
+import com.hansen.fullvideo.utils.LogUtils;
 
 /**
  * @author HanN on 2019/12/23 11:12
@@ -35,7 +37,7 @@ public class CommonDialog extends Dialog {
     /**
      * 显示的消息
      */
-    private TextView messageTv ;
+    private EditText messageTv ;
 
     /**
      * 确认和取消按钮
@@ -86,6 +88,8 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 if ( onClickBottomListener!= null) {
+                    String string = messageTv.getText().toString();
+                    LogUtils.d("修改后的名称"+string);
                     onClickBottomListener.onPositiveClick();
                 }
             }
@@ -158,7 +162,7 @@ public class CommonDialog extends Dialog {
         negtiveBn = (Button) findViewById(R.id.negtive);
         positiveBn = (Button) findViewById(R.id.positive);
         titleTv = (TextView) findViewById(R.id.title);
-        messageTv = (TextView) findViewById(R.id.message);
+        messageTv = (EditText) findViewById(R.id.message);
         imageIv = (ImageView) findViewById(R.id.image);
         columnLineView = findViewById(R.id.column_line);
     }

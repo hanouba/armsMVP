@@ -28,13 +28,11 @@ public class SocketActivity extends AppCompatActivity implements View.OnClickLis
     private Button connect,sendMsg,clean;
     private EditText edPort,edIP,edData;
     private TextView txReceive;
-    private final MyHandler myHandler = new MyHandler(this);
-    private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
 
 
     public static Context context ;
     private static TcpClient tcpClient = null;
-
+    private int num = 0;
     ExecutorService exec = Executors.newCachedThreadPool();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +40,7 @@ public class SocketActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_socket);
         context = this;
         initView();
-        IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
-        registerReceiver(myBroadcastReceiver,intentFilter);
+
     }
 
 
@@ -65,18 +62,15 @@ public class SocketActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.connect:
-            tcpClient = new TcpClient(edIP.getText().toString(),6000) ;
+            tcpClient = new TcpClient(this) ;
                 exec.execute(tcpClient);
                 break;
             case R.id.sendmsg:
-                Message message = Message.obtain();
-                message.what = 2;
-                message.obj = sendMsg.getText().toString();
-                myHandler.sendMessage(message);
+                num++;
                 exec.execute(new Runnable() {
                     @Override
                     public void run() {
-                        tcpClient.send(txReceive.getText().toString());
+                        tcpClient.send("<call,"+num+",0>");
                     }
                 });
 
@@ -88,44 +82,9 @@ public class SocketActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private class MyHandler extends android.os.Handler{
-        private WeakReference<SocketActivity> mActivity;
 
-        MyHandler(SocketActivity activity){
-            mActivity = new WeakReference<SocketActivity>(activity);
-        }
 
-        @Override
-        public void handleMessage(Message msg) {
-            if (mActivity != null){
-                switch (msg.what){
-                    case 1:
-                        txReceive.append(msg.obj.toString());
-                        break;
-                    case 2:
-                        sendMsg.append(msg.obj.toString());
-                        break;
-                }
-            }
-        }
-    }
 
-    private class MyBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String mAction = intent.getAction();
-            switch (mAction){
-                case "tcpClientReceiver":
-                    String msg = intent.getStringExtra("tcpClientReceiver");
-                    Message message = Message.obtain();
-                    message.what = 1;
-                    message.obj = msg;
-                    myHandler.sendMessage(message);
-                    break;
-            }
-        }
-    }
 
 
 
@@ -135,7 +94,7 @@ public class SocketActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onStop() {
-        unregisterReceiver(myBroadcastReceiver);
+
         super.onStop();
     }
 }

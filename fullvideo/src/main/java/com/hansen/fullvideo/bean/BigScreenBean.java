@@ -25,22 +25,24 @@ public class BigScreenBean {
     protected int lessonto;	// 结束行数
     private String videoname; //视频名称
     private int tempType;//预案编号
+    private String tempName;//预案名称
  	// id
 
 
-    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, String videoname, int tempType) {
+    public BigScreenBean(int type, int column, int lessonfrom, int lessonto, String videoname, int tempType,String tempName) {
         this.type = type;
         this.column = column;
         this.lessonfrom = lessonfrom;
         this.lessonto = lessonto;
         this.videoname = videoname;
         this.tempType = tempType;
+        this.tempName = tempName;
     }
 
 
-    @Generated(hash = 1779582477)
-    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname,
-            int tempType) {
+    @Generated(hash = 385706416)
+    public BigScreenBean(Long id, int type, int column, int lessonfrom, int lessonto, String videoname, int tempType,
+            String tempName) {
         this.id = id;
         this.type = type;
         this.column = column;
@@ -48,6 +50,7 @@ public class BigScreenBean {
         this.lessonto = lessonto;
         this.videoname = videoname;
         this.tempType = tempType;
+        this.tempName = tempName;
     }
 
 
@@ -123,6 +126,16 @@ public class BigScreenBean {
 
     public void setTempType(int tempType) {
         this.tempType = tempType;
+    }
+
+
+    public String getTempName() {
+        return this.tempName;
+    }
+
+
+    public void setTempName(String tempName) {
+        this.tempName = tempName;
     }
 
  

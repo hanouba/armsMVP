@@ -25,12 +25,12 @@ import java.util.List;
  * @updateremark:
  * @version: 2.1.67
  */
-public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
+public class TemplateAdapter extends ArrayAdapter<String> {
     private int resourceId;
     private int selected = -1;
-    private int firstCreate = 0;
 
-    public TemplateAdapter(Context context, int textViewResourceId, List<TemplateBean> objects) {
+
+    public TemplateAdapter(Context context, int textViewResourceId, List<String> objects) {
         super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
 
@@ -39,11 +39,11 @@ public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TemplateBean templateBean = getItem(position); //获取当前项的Fruit实例
+        String temName = getItem(position); //获取当前项的Fruit实例
         View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         ImageView tempImage = (ImageView) view.findViewById(R.id.temp_image);
         TextView tempName = (TextView) view.findViewById(R.id.temp_name);
-        tempName.setText(templateBean.getTextName());
+        tempName.setText(temName);
 
 
         if (selected == position) {

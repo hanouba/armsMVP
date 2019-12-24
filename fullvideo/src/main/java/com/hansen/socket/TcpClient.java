@@ -1,11 +1,18 @@
 package com.hansen.socket;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.hansen.fullvideo.GreenActivity;
+import com.hansen.fullvideo.ui.CommonDialog;
+import com.hansen.fullvideo.utils.LogUtils;
+
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -22,26 +29,25 @@ import java.net.Socket;
  */
 public  class TcpClient implements Runnable {
     private String TAG = "TcpClient";
-    private String  serverIP = "192.168.88.141";
-    private int serverPort = 1234;
+//    private String  serverIP = "53.2.1.145";
+    private String  serverIP = "172.30.117.1";
+    private int serverPort = 1024;
     private PrintWriter pw;
-    private InputStream is;
-    private DataInputStream dis;
-    private boolean isRun = true;
     private Socket socket = null;
-    byte buff[]  = new byte[4096];
-    private String rcvMsg;
-    private int rcvLen;
+    private Context context;
 
-
-
-    public TcpClient(String ip , int port){
-        this.serverIP = ip;
-        this.serverPort = port;
+    public TcpClient(Context context) {
+        this.context = context;
     }
 
     public void closeSelf(){
-        isRun = false;
+
+        try {
+            pw.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void send(String msg){
@@ -55,36 +61,16 @@ public  class TcpClient implements Runnable {
             socket = new Socket(serverIP,serverPort);
             socket.setSoTimeout(5000);
             pw = new PrintWriter(socket.getOutputStream(),true);
-            is = socket.getInputStream();
-            dis = new DataInputStream(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        while (isRun){
-            try {
-                rcvLen = dis.read(buff);
-                rcvMsg = new String(buff,0,rcvLen,"utf-8");
-                Log.i(TAG, "run: 收到消息:"+ rcvMsg);
-                Intent intent =new Intent();
-                intent.setAction("tcpClientReceiver");
-                intent.putExtra("tcpClientReceiver",rcvMsg);
-                SocketActivity.context.sendBroadcast(intent);//将消息发送给主界面
-                if (rcvMsg.equals("QuitClient")){   //服务器要求客户端结束
-                    isRun = false;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-        }
-        try {
-            pw.close();
-            is.close();
-            dis.close();
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            LogUtils.d(TAG,"链接失败");
+            Intent intent =new Intent();
+            intent.setAction("tcpClientReceiver");
+            context.sendBroadcast(intent);
         }
+
+
     }
 
 

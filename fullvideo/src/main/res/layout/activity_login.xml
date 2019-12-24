@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/constra"
     android:layout_height="match_parent"
     android:background="@color/color_2f8cfe"
     tools:context=".LoginActivity">
@@ -38,7 +39,7 @@
 
 
     <android.support.v7.widget.CardView
-
+        android:visibility="gone"
         android:layout_width="319dp"
         android:layout_height="386dp"
         android:layout_marginStart="595dp"
