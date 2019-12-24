@@ -164,6 +164,17 @@ public class DBHelper {
 
     }
 
+    /**
+     * 删除指定预案
+     * @param tempType
+     */
+    public void deleteByTempType(int tempType) {
+        List<BigScreenBean> bigScreenBeans = bigScreenBeanDao.queryBuilder().where(BigScreenBeanDao.Properties.TempType.eq(tempType)).build().list();
+
+        bigScreenBeanDao.deleteInTx(bigScreenBeans);
+
+    }
+
     public void setShowState(BigScreenBean bigScreenBean,int  state) {
         bigScreenBean.setTempType(state);
         bigScreenBeanDao.update(bigScreenBean);

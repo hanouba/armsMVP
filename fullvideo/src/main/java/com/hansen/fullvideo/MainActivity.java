@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.dao.DBHelper;
 import com.hansen.fullvideo.utils.Utils;
+import com.hansen.socket.SocketActivity;
 
 import java.util.List;
 
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void openOld(View view) {
-        Intent intent = new Intent(this,LoginActivity.class);
+        Intent intent = new Intent(this, SocketActivity.class);
         startActivity(intent);
     }
 }

@@ -205,6 +205,14 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
+
+        lvTemplate.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
+            }
+        });
     }
 
 
@@ -601,7 +609,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
             case R.id.bt_clean:
-                mDBHelper.deleteAll();
+                mDBHelper.deleteByTempType(currentTemp);
                 initTable();
                 updataTelep();
                 break;

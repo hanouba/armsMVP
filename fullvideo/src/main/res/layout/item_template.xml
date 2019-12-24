@@ -20,6 +20,7 @@
         android:id="@+id/temp_name"
         android:layout_weight="4"
         android:layout_width="0dp"
+        android:background="@null"
         android:textColor="@color/color_969696"
         android:layout_height="match_parent"/>
 

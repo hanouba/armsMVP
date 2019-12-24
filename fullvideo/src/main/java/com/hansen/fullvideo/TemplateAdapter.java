@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,33 +29,30 @@ public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
     private int resourceId;
     private int selected = -1;
     private int firstCreate = 0;
-    public TemplateAdapter(Context context, int textViewResourceId, List<TemplateBean> objects){
-        super(context,textViewResourceId,objects);
+
+    public TemplateAdapter(Context context, int textViewResourceId, List<TemplateBean> objects) {
+        super(context, textViewResourceId, objects);
         resourceId = textViewResourceId;
 
     }
 
 
-
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         TemplateBean templateBean = getItem(position); //获取当前项的Fruit实例
-        View view= LayoutInflater.from(getContext()).inflate(resourceId,parent,false);
+        View view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
         ImageView tempImage = (ImageView) view.findViewById(R.id.temp_image);
-        TextView tempName =(TextView) view.findViewById(R.id.temp_name);
+        TextView tempName = (TextView) view.findViewById(R.id.temp_name);
         tempName.setText(templateBean.getTextName());
 
 
-
-
-
-        if(selected==position){
+        if (selected == position) {
             tempImage.setImageResource(R.mipmap.icon_temp_selected);  //选中项背景
             tempName.setTextColor(getContext().getResources().getColor(R.color.color_388BFD));
-        }else{
+        } else {
 
-                tempImage.setImageResource(R.mipmap.icon_temp_unselected);  //其它项背景
-                tempName.setTextColor(getContext().getResources().getColor(R.color.color_969696));
+            tempImage.setImageResource(R.mipmap.icon_temp_unselected);  //其它项背景
+            tempName.setTextColor(getContext().getResources().getColor(R.color.color_969696));
 
 
         }
@@ -64,7 +62,7 @@ public class TemplateAdapter extends ArrayAdapter<TemplateBean> {
     }
 
     public void setSelected(int selectPostions) {
-        if(selected != selectPostions){
+        if (selected != selectPostions) {
             selected = selectPostions;
             notifyDataSetChanged();
         }
