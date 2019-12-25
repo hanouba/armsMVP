@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
         registerReceiver(myBroadcastReceiver, intentFilter);
-        saveState = SPUtils.getInstance().getBoolean("SAVE_STATE");
+
         initView();
         mDialog = new CommonDialog(this);
 
@@ -70,23 +70,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         cbSave = findViewById(R.id.cb_save);
 
         login.setOnClickListener(this);
+        SPUtils.getInstance().put("SAVE_STATE",true);
         cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 cbSave.setChecked(isChecked);
-                SPUtils.getInstance().put("SAVE_STATE",isChecked);
+
             }
         });
 
-        if (saveState) {
+
             String ip = SPUtils.getInstance().getString("IP");
             String port = SPUtils.getInstance().getString("PORT");
             etIp.setText(ip);
             etPort.setText(port);
-            cbSave.setChecked(true);
-        }else {
 
-        }
+
 
     }
 
@@ -99,12 +98,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String port = etPort.getText().toString();
 
                 if (  checkIp(ip,port)) {
-                    if (saveState) {
+
                         SPUtils.getInstance().put("IP",ip);
                         SPUtils.getInstance().put("PORT",port);
-                    }else {
 
-                    }
                     initTCP(ip, Integer.parseInt(port));
                             openGreen();
 
