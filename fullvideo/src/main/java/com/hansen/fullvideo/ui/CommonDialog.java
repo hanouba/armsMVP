@@ -35,9 +35,13 @@ public class CommonDialog extends Dialog {
     private TextView titleTv ;
 
     /**
-     * 显示的消息
+     * 修改的名称
      */
     private EditText messageTv ;
+    /**
+     * 显示的信息
+     */
+    private TextView tvMessage ;
 
     /**
      * 确认和取消按钮
@@ -64,6 +68,10 @@ public class CommonDialog extends Dialog {
      * 底部是否只有一个按钮
      */
     private boolean isSingle = false;
+    /**
+     * 是否是编辑名称
+     */
+    private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +125,7 @@ public class CommonDialog extends Dialog {
             titleTv.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(message)) {
-            messageTv.setText(message);
+            tvMessage.setText(message);
         }
         //如果设置按钮的文字
         if (!TextUtils.isEmpty(positive)) {
@@ -147,6 +155,14 @@ public class CommonDialog extends Dialog {
             negtiveBn.setVisibility(View.VISIBLE);
             columnLineView.setVisibility(View.VISIBLE);
         }
+
+        if (isEdit){
+            tvMessage.setVisibility(View.GONE);
+            messageTv.setVisibility(View.VISIBLE);
+        }else {
+            tvMessage.setVisibility(View.VISIBLE);
+            messageTv.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -162,7 +178,8 @@ public class CommonDialog extends Dialog {
         negtiveBn = (Button) findViewById(R.id.negtive);
         positiveBn = (Button) findViewById(R.id.positive);
         titleTv = (TextView) findViewById(R.id.title);
-        messageTv = (EditText) findViewById(R.id.message);
+        messageTv = (EditText) findViewById(R.id.et_message);
+        tvMessage = (TextView) findViewById(R.id.message);
         imageIv = (ImageView) findViewById(R.id.image);
         columnLineView = findViewById(R.id.column_line);
     }
@@ -232,6 +249,11 @@ public class CommonDialog extends Dialog {
 
     public CommonDialog setSingle(boolean single) {
         isSingle = single;
+        return this ;
+    }
+
+    public CommonDialog setEditorText(boolean edit) {
+        isEdit = edit;
         return this ;
     }
 

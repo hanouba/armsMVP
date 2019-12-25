@@ -246,6 +246,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 mDialog.setMessage("")
+                        .setEditorText(true)
                         .setTitle("编辑预案名称")
                         .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                     @Override
@@ -389,6 +390,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
                                     mDialog.setMessage("请先点击编辑")
                                             .setTitle("提示")
+                                            .setEditorText(false)
                                             .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                                         @Override
                                         public void onPositiveClick(String name) {
@@ -737,6 +739,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
                             mDialog.setMessage("是否删除")
                                     .setTitle("提示")
+                                    .setEditorText(false)
                                     .setSingle(false).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                                 @Override
                                 public void onPositiveClick(String name) {
@@ -782,6 +785,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
                         mDialog.setMessage("服务连接失败,重新连接")
                                 .setTitle("提示")
+                                .setEditorText(false)
                                 .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                             @Override
                             public void onPositiveClick(String name) {
