@@ -115,6 +115,8 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
     private final MyHandler myHandler = new MyHandler(this);
     private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+    private List<TemplateBean> allTemp;//数据库中的预案名称
+    private List<String> tempNames; //存储获取到预案名称
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -211,16 +213,16 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         Log.i("initTable", "initData");
         textviewCourseInfoMap = new HashMap<Integer, List<BigScreenBean>>();
 
-        List<String> tempNames = new ArrayList<>();
-        List<BigScreenBean> allBigScreens = mDBHelper.searchAll();
-        for (int i = 0; i < allBigScreens.size(); i++) {
-            String tempName = allBigScreens.get(i).getTempName();
+        tempNames = new ArrayList<>();
+        allTemp = mDBHelper.searchAllTemp();
+        for (int i = 0; i < allTemp.size(); i++) {
+            String tempName = allTemp.get(i).getTempName();
             tempNames.add(tempName);
         }
-        List tempNameList = repeatListWayThird(tempNames);
 
-        currentTempName = allBigScreens.get(0).getTempName();
-        templateAdapter = new TemplateAdapter(this,R.layout.item_template,tempNameList);
+
+        currentTempName = tempNames.get(0);
+        templateAdapter = new TemplateAdapter(this,R.layout.item_template, tempNames);
 
         lvTemplate.setAdapter(templateAdapter);
         templateAdapter.setSelected(0);
@@ -230,10 +232,14 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         lvTemplate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //当前选择的预案编号
                 currentTemp = position;
+                //清空预案
                 bigScreenBeans.clear();
+                //查询当前元内的数据
                 bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
-                currentTempName = bigScreenBeans.get(position).getTempName();
+                //得到当前选择的预案
+                currentTempName = allTemp.get(position).getTempName();
                 updataTelep();
                 updateEditState(false);
                 templateAdapter.setSelected(position);
@@ -243,7 +249,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
         lvTemplate.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 mDialog.setMessage("")
                         .setEditorText(true)
@@ -252,12 +258,16 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onPositiveClick(String name) {
                         mDialog.dismiss();
-                        List<BigScreenBean> sameTempS = mDBHelper.searchAllByTempIndex(currentTemp);
-                        for (int i = 0; i <sameTempS.size(); i++) {
 
-                            mDBHelper.setTempName(sameTempS.get(i),name);
+                        mDBHelper.setTempName(position,name);
+                        allTemp.clear();
+                        allTemp = mDBHelper.searchAllTemp();
+                        tempNames.clear();
+                        for (int i = 0; i < allTemp.size(); i++) {
+                            String tempName = allTemp.get(i).getTempName();
+                            tempNames.add(tempName);
                         }
-
+                        templateAdapter.notifyDataSetChanged();
                     }
 
                     @Override

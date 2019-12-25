@@ -3,14 +3,13 @@ package com.hansen.fullvideo.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.BigScreenBeanDao;
 import com.hansen.fullvideo.bean.DaoMaster;
 import com.hansen.fullvideo.bean.DaoSession;
-import com.hansen.fullvideo.bean.SingleViewLocation;
-import com.hansen.fullvideo.bean.SingleViewLocationDao;
+import com.hansen.fullvideo.bean.TemplateBean;
+import com.hansen.fullvideo.bean.TemplateBeanDao;
 
 import java.util.List;
 
@@ -42,6 +41,7 @@ public class DBHelper {
      * dao
      */
     private BigScreenBeanDao bigScreenBeanDao;
+    private TemplateBeanDao templateBeanDao;
 
 
     private static DBHelper mDbController;
@@ -71,6 +71,7 @@ public class DBHelper {
         mDaoMaster = new DaoMaster(getWritableDatabase());
         mDaoSession = mDaoMaster.newSession();
         bigScreenBeanDao = mDaoSession.getBigScreenBeanDao();
+        templateBeanDao = mDaoSession.getTemplateBeanDao();
     }
 
     /**
@@ -107,6 +108,11 @@ public class DBHelper {
         bigScreenBeanDao.insertOrReplace(bigScreenBean);
     }
 
+    public void insertOrReplace(TemplateBean templateBean) {
+        templateBeanDao.insertOrReplace(templateBean);
+    }
+
+
 
     /**
      * 插入一条记录，表里面要没有与之相同的记录
@@ -116,7 +122,9 @@ public class DBHelper {
     public long insert(BigScreenBean bigScreenBean) {
         return bigScreenBeanDao.insert(bigScreenBean);
     }
-
+    public long insert(TemplateBean templateBean) {
+        return templateBeanDao.insert(templateBean);
+    }
     /**
      * 更新数据
      *
@@ -144,6 +152,15 @@ public class DBHelper {
     public List<BigScreenBean> searchAll() {
         List<BigScreenBean> personInfors = bigScreenBeanDao.queryBuilder().list();
         return personInfors;
+    }
+
+    /**
+     * 查询所有的预案
+     * @return
+     */
+    public List<TemplateBean> searchAllTemp() {
+        List<TemplateBean> templateBeans = templateBeanDao.queryBuilder().list();
+        return templateBeans;
     }
 
     /**
@@ -182,12 +199,13 @@ public class DBHelper {
 
     /**
      * 更新预案名称
-     * @param bigScreenBean
+     * @param typeId
      * @param name
      */
-    public void setTempName(BigScreenBean bigScreenBean,String  name) {
-        bigScreenBean.setTempName(name);
-        bigScreenBeanDao.update(bigScreenBean);
+    public void setTempName(int typeId,String  name) {
+        TemplateBean templateBean = templateBeanDao.queryBuilder().where(TemplateBeanDao.Properties.TempType.eq(typeId)).build().unique();
+        templateBean.setTempName(name);
+        templateBeanDao.update(templateBean);
     }
 
     /**

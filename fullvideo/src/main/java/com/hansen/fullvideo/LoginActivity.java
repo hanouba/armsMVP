@@ -9,10 +9,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
+import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.DBHelper;
 import com.hansen.fullvideo.utils.Utils;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -64,22 +66,22 @@ public class LoginActivity extends AppCompatActivity {
         BigScreenBean bigScreenBean1 = new BigScreenBean(0,0,1,2,"cctv-1",0,"预案1");
         BigScreenBean bigScreenBean2 = new BigScreenBean(0,1,1,2,"cctv-1",0,"预案1");
 
-        BigScreenBean bigScreenBean3 = new BigScreenBean(1,0,3,4,"cctv-2",1,"预案1");
-        BigScreenBean bigScreenBean4 = new BigScreenBean(1,1,3,4,"cctv-2",1,"预案1");
+        BigScreenBean bigScreenBean3 = new BigScreenBean(1,0,3,4,"cctv-2",1,"预案2");
+        BigScreenBean bigScreenBean4 = new BigScreenBean(1,1,3,4,"cctv-2",1,"预案2");
 
-        BigScreenBean bigScreenBean5 = new BigScreenBean(2,0,5,6,"cctv-3",2,"预案2");
-        BigScreenBean bigScreenBean6 = new BigScreenBean(2,1,5,6,"cctv-3",2,"预案2");
+        BigScreenBean bigScreenBean5 = new BigScreenBean(2,0,5,6,"cctv-3",2,"预案3");
+        BigScreenBean bigScreenBean6 = new BigScreenBean(2,1,5,6,"cctv-3",2,"预案3");
 
-        BigScreenBean bigScreenBean7 = new BigScreenBean(3,6,1,4,"cctv-4",2,"预案2");
-        BigScreenBean bigScreenBean8 = new BigScreenBean(3,7,1,4,"cctv-4",2,"预案2");
-        BigScreenBean bigScreenBean9 = new BigScreenBean(3,8,1,4,"cctv-4",2,"预案2");
-        BigScreenBean bigScreenBean10 = new BigScreenBean(3,9,1,4,"cctv-4",2,"预案2");
+        BigScreenBean bigScreenBean7 = new BigScreenBean(3,6,1,4,"cctv-4",2,"预案3");
+        BigScreenBean bigScreenBean8 = new BigScreenBean(3,7,1,4,"cctv-4",2,"预案3");
+        BigScreenBean bigScreenBean9 = new BigScreenBean(3,8,1,4,"cctv-4",2,"预案3");
+        BigScreenBean bigScreenBean10 = new BigScreenBean(3,9,1,4,"cctv-4",2,"预案3");
 
-        BigScreenBean bigScreenBean11 = new BigScreenBean(4,2,1,2,"cctv-5",3,"预案3");
-        BigScreenBean bigScreenBean12 = new BigScreenBean(4,3,1,2,"cctv-5",3,"预案3");
+        BigScreenBean bigScreenBean11 = new BigScreenBean(4,2,1,2,"cctv-5",3,"预案4");
+        BigScreenBean bigScreenBean12 = new BigScreenBean(4,3,1,2,"cctv-5",3,"预案4");
 
-        BigScreenBean bigScreenBean13 = new BigScreenBean(5,2,5,6,"cctv-6",3,"预案3");
-        BigScreenBean bigScreenBean14 = new BigScreenBean(5,3,5,6,"cctv-6",3,"预案3");
+        BigScreenBean bigScreenBean13 = new BigScreenBean(5,2,5,6,"cctv-6",3,"预案4");
+        BigScreenBean bigScreenBean14 = new BigScreenBean(5,3,5,6,"cctv-6",3,"预案4");
 
 
         mDBHelper.insertOrReplace(bigScreenBean1);
@@ -96,6 +98,11 @@ public class LoginActivity extends AppCompatActivity {
         mDBHelper.insertOrReplace(bigScreenBean12);
         mDBHelper.insertOrReplace(bigScreenBean13);
         mDBHelper.insertOrReplace(bigScreenBean14);
+
+        for (int i = 1; i <= 100; i++) {
+            TemplateBean templateBean = new TemplateBean("预案"+i,i-1);
+            mDBHelper.insertOrReplace(templateBean);
+        }
 
 
 

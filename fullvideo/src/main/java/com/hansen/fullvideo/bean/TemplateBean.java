@@ -1,5 +1,9 @@
 package com.hansen.fullvideo.bean;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+
 /**
  * @author HanN on 2019/12/18 15:14
  * @email: 1356548475@qq.com
@@ -10,28 +14,52 @@ package com.hansen.fullvideo.bean;
  * @updateremark:
  * @version: 2.1.67
  */
+@Entity
 public class TemplateBean {
-    private  String textName;
-    private  int  imageId;
+    @Id(autoincrement = true)//设置自增长
+    private Long id;
+    private  String tempName;
+    private int tempType;//预案编号
 
-    public TemplateBean(String textName, int imageId) {
-        this.textName = textName;
-        this.imageId = imageId;
+    public TemplateBean(String tempName, int tempType) {
+        this.tempName = tempName;
+        this.tempType = tempType;
     }
 
-    public String getTextName() {
-        return textName;
+    @Generated(hash = 153456139)
+    public TemplateBean(Long id, String tempName, int tempType) {
+        this.id = id;
+        this.tempName = tempName;
+        this.tempType = tempType;
     }
 
-    public void setTextName(String textName) {
-        this.textName = textName;
+    @Generated(hash = 741639705)
+    public TemplateBean() {
     }
 
-    public int getImageId() {
-        return imageId;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setId(Long id) {
+        this.id = id;
     }
+
+    public String getTempName() {
+        return this.tempName;
+    }
+
+    public void setTempName(String tempName) {
+        this.tempName = tempName;
+    }
+
+    public int getTempType() {
+        return this.tempType;
+    }
+
+    public void setTempType(int tempType) {
+        this.tempType = tempType;
+    }
+
+
 }
