@@ -36,31 +36,47 @@ public  class TcpClient implements Runnable {
     private Socket socket = null;
     private Context context;
 
-    public TcpClient(Context context) {
+    public TcpClient(Context context,String serverIP, int serverPort) {
         this.context = context;
+        this.serverIP = serverIP;
+        this.serverPort = serverPort;
     }
 
     public void closeSelf(){
 
         try {
-            pw.close();
-            socket.close();
+            if (pw !=null && socket !=null) {
+                pw.close();
+                socket.close();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void send(String msg){
-        pw.println(msg);
-        pw.flush();
+        try {
+            LogUtils.d(TAG,"发送");
+            InputStream inputstr = socket.getInputStream();
+            pw.println(msg);
+            pw.flush();
+        }catch (Exception e) {
+            LogUtils.d(TAG,"发送失败");
+            Intent intent =new Intent();
+            intent.setAction("tcpClientSendFaild");
+            GreenActivity.context.sendBroadcast(intent);
+        }
+
     }
 
     @Override
     public void run() {
         try {
             socket = new Socket(serverIP,serverPort);
-            socket.setSoTimeout(5000);
+            socket.setSoTimeout(3000);
             pw = new PrintWriter(socket.getOutputStream(),true);
+            LogUtils.d(TAG,"链接");
 
         } catch (IOException e) {
             e.printStackTrace();

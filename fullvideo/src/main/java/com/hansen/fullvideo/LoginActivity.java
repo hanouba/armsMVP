@@ -1,125 +1,207 @@
 package com.hansen.fullvideo;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Message;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.TemplateBean;
 import com.hansen.fullvideo.dao.DBHelper;
+import com.hansen.fullvideo.floatactionbutton.FloatingActionButton;
+import com.hansen.fullvideo.ui.CommonDialog;
+import com.hansen.fullvideo.utils.LogUtils;
+import com.hansen.fullvideo.utils.SPUtils;
 import com.hansen.fullvideo.utils.Utils;
+import com.hansen.socket.TcpClient;
 
+import org.greenrobot.greendao.annotation.ToMany;
+
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class LoginActivity extends AppCompatActivity {
-    private DBHelper mDBHelper;
-    private ConstraintLayout constraintLayout;
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    private EditText etIp, etPort;
+    private Button login;
+    private CheckBox cbSave;
+    private CommonDialog mDialog;
+    public static TcpClient tcpClient = null;
+    ExecutorService exec = Executors.newCachedThreadPool();
+
+    private final MyHandler myHandler = new MyHandler(this);
+    private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+    private boolean connect = true;
+    private boolean saveState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        constraintLayout = findViewById(R.id.constra);
-        constraintLayout.setBackgroundResource(R.mipmap.splash);
-        Utils.init(this);
-        mDBHelper = DBHelper.getInstance(LoginActivity.this);
-        checkPermiss();
+        IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
+        registerReceiver(myBroadcastReceiver, intentFilter);
+        saveState = SPUtils.getInstance().getBoolean("SAVE_STATE");
+        initView();
+        mDialog = new CommonDialog(this);
 
 
     }
 
-    @AfterPermissionGranted(1)
-    private void checkPermiss() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
+    private void initView() {
+        etIp = findViewById(R.id.et_ip);
+        etPort = findViewById(R.id.et_port);
+        login = findViewById(R.id.bt_login);
+        cbSave = findViewById(R.id.cb_save);
+
+        login.setOnClickListener(this);
+        cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                cbSave.setChecked(isChecked);
+                SPUtils.getInstance().put("SAVE_STATE",isChecked);
+            }
+        });
+
+        if (saveState) {
+            String ip = SPUtils.getInstance().getString("IP");
+            String port = SPUtils.getInstance().getString("PORT");
+            etIp.setText(ip);
+            etPort.setText(port);
+            cbSave.setChecked(true);
+        }else {
+
+        }
+
+    }
 
 
-            List<BigScreenBean> bigScreenBeans = mDBHelper.searchAll();
-            if (bigScreenBeans.size() != 0) {
-            }else {
-                createLocalData();
-            }
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            openGreen();
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.camera_and_location_rationale),
-                    1, perms);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_login:
+                String ip = etIp.getText().toString();
+                String port = etPort.getText().toString();
+
+                if (  checkIp(ip,port)) {
+                    if (saveState) {
+                        SPUtils.getInstance().put("IP",ip);
+                        SPUtils.getInstance().put("PORT",port);
+                    }else {
+
+                    }
+                    initTCP(ip, Integer.parseInt(port));
+                            openGreen();
+
+
+                }else {
+                    Toast.makeText(this,"ip或者端口错误", Toast.LENGTH_LONG).show();
+                }
+
+
+
+
+
+
+                break;
         }
     }
 
-    /**
-     * 创建预案数据
-     */
-    private void createLocalData() {
-        BigScreenBean bigScreenBean1 = new BigScreenBean(0,0,1,2,"cctv-1",0,"预案1");
-        BigScreenBean bigScreenBean2 = new BigScreenBean(0,1,1,2,"cctv-1",0,"预案1");
-
-        BigScreenBean bigScreenBean3 = new BigScreenBean(1,0,3,4,"cctv-2",1,"预案2");
-        BigScreenBean bigScreenBean4 = new BigScreenBean(1,1,3,4,"cctv-2",1,"预案2");
-
-        BigScreenBean bigScreenBean5 = new BigScreenBean(2,0,5,6,"cctv-3",2,"预案3");
-        BigScreenBean bigScreenBean6 = new BigScreenBean(2,1,5,6,"cctv-3",2,"预案3");
-
-        BigScreenBean bigScreenBean7 = new BigScreenBean(3,6,1,4,"cctv-4",2,"预案3");
-        BigScreenBean bigScreenBean8 = new BigScreenBean(3,7,1,4,"cctv-4",2,"预案3");
-        BigScreenBean bigScreenBean9 = new BigScreenBean(3,8,1,4,"cctv-4",2,"预案3");
-        BigScreenBean bigScreenBean10 = new BigScreenBean(3,9,1,4,"cctv-4",2,"预案3");
-
-        BigScreenBean bigScreenBean11 = new BigScreenBean(4,2,1,2,"cctv-5",3,"预案4");
-        BigScreenBean bigScreenBean12 = new BigScreenBean(4,3,1,2,"cctv-5",3,"预案4");
-
-        BigScreenBean bigScreenBean13 = new BigScreenBean(5,2,5,6,"cctv-6",3,"预案4");
-        BigScreenBean bigScreenBean14 = new BigScreenBean(5,3,5,6,"cctv-6",3,"预案4");
-
-
-        mDBHelper.insertOrReplace(bigScreenBean1);
-        mDBHelper.insertOrReplace(bigScreenBean2);
-        mDBHelper.insertOrReplace(bigScreenBean3);
-        mDBHelper.insertOrReplace(bigScreenBean4);
-        mDBHelper.insertOrReplace(bigScreenBean5);
-        mDBHelper.insertOrReplace(bigScreenBean6);
-        mDBHelper.insertOrReplace(bigScreenBean7);
-        mDBHelper.insertOrReplace(bigScreenBean8);
-        mDBHelper.insertOrReplace(bigScreenBean9);
-        mDBHelper.insertOrReplace(bigScreenBean10);
-        mDBHelper.insertOrReplace(bigScreenBean11);
-        mDBHelper.insertOrReplace(bigScreenBean12);
-        mDBHelper.insertOrReplace(bigScreenBean13);
-        mDBHelper.insertOrReplace(bigScreenBean14);
-
-        for (int i = 1; i <= 100; i++) {
-            TemplateBean templateBean = new TemplateBean("预案"+i,i-1);
-            mDBHelper.insertOrReplace(templateBean);
+    private boolean checkIp(String ip, String port) {
+        if (ip.isEmpty()) {
+        return false;
         }
 
-
+        if (port.isEmpty()) {
+            return false;
+        }
+        return true;
 
     }
 
     public void openGreen() {
+        connect = true;
         Intent intent = new Intent(this,GreenActivity.class);
         startActivity(intent);
         finish();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    private void initTCP(String ip, int port) {
+        tcpClient = new TcpClient(this, ip, port);
+        exec.execute(tcpClient);
     }
 
+
+    private class MyHandler extends android.os.Handler {
+        private WeakReference<LoginActivity> mActivity;
+
+        MyHandler(LoginActivity activity) {
+            mActivity = new WeakReference<LoginActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (mActivity != null) {
+                switch (msg.what) {
+                    case 1:
+                        connect = false;
+                        mDialog.setMessage("服务连接失败,请检查")
+                                .setTitle("提示")
+                                .setEditorText(false)
+                                .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                            @Override
+                            public void onPositiveClick(String name) {
+                                mDialog.dismiss();
+
+                            }
+
+                            @Override
+                            public void onNegtiveClick() {
+                                mDialog.dismiss();
+
+                            }
+                        }).show();
+                        break;
+
+                }
+            }
+        }
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String mAction = intent.getAction();
+            switch (mAction) {
+                case "tcpClientReceiver":
+                    LogUtils.d("TcpClient","tcpClientReceiver");
+                    Message message = Message.obtain();
+                    message.what = 1;
+                    myHandler.sendMessage(message);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myBroadcastReceiver);
+    }
 }

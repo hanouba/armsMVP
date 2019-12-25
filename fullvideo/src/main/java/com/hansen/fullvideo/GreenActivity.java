@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hansen.fullvideo.bean.BigScreenBean;
 import com.hansen.fullvideo.bean.TemplateBean;
@@ -31,12 +28,8 @@ import com.hansen.fullvideo.dao.DBHelper;
 import com.hansen.fullvideo.ui.BigScreenControlView;
 import com.hansen.fullvideo.ui.CommonDialog;
 import com.hansen.fullvideo.utils.LogUtils;
-import com.hansen.fullvideo.utils.Utils;
-import com.hansen.socket.SocketActivity;
-import com.hansen.socket.TcpClient;
 
 import java.lang.ref.WeakReference;
-import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,18 +38,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+import static com.hansen.fullvideo.LoginActivity.tcpClient;
 
 public class GreenActivity extends AppCompatActivity implements View.OnClickListener {
     protected int aveWidth;//课程格子平均宽度
     protected int screenWidth;//屏幕宽度
     protected int gridHeight = 80;//格子高度
-
+    public static Context context;
     // 行数数量
     private final int rowNum = 6;
     //列数
@@ -110,11 +100,10 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
     private TemplateAdapter templateAdapter;
     private CommonDialog mDialog;
     private Button btCommit;
-    private static TcpClient tcpClient = null;
-    ExecutorService exec = Executors.newCachedThreadPool();
 
     private final MyHandler myHandler = new MyHandler(this);
     private MyBroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+
     private List<TemplateBean> allTemp;//数据库中的预案名称
     private List<String> tempNames; //存储获取到预案名称
 
@@ -172,10 +161,10 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_green);
         mDBHelper = DBHelper.getInstance(GreenActivity.this);
         initView();
-        IntentFilter intentFilter = new IntentFilter("tcpClientReceiver");
-        registerReceiver(myBroadcastReceiver, intentFilter);
+        context = this;
         initListener();
-        initTCP();
+        IntentFilter intentFilter = new IntentFilter("tcpClientSendFaild");
+        registerReceiver(myBroadcastReceiver, intentFilter);
         initData();
         mDialog = new CommonDialog(GreenActivity.this);
     }
@@ -183,12 +172,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 链接tcp服务端
      */
-    private void initTCP() {
-        tcpClient = new TcpClient(this);
-        exec.execute(tcpClient);
 
-
-    }
 
     private void initView() {
         rlContent = findViewById(R.id.rl_video_content);
@@ -326,7 +310,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         for (int i = 1; i <= rowNum; i++) {
             // 遍历每列
             for (int j = 1; j <= columnNum; j++) {
-                BorderTextView tx = new BorderTextView(this);
+                final BorderTextView tx = new BorderTextView(this);
                 tx.setId((i - 1) * columnNum + j);
                 //相对布局参数
                 RelativeLayout.LayoutParams rp = new RelativeLayout.LayoutParams(
@@ -364,11 +348,16 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                     public boolean onTouch(View v, MotionEvent event) {
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN:
+                                //在选中的方块上 显示一个覆盖的区域
+
+
                                 if (isEditAble) {
                                     clickTimes++;
                                     if (clickTimes == 1) {
                                         startRow = finalI;
                                         startColumn = finalJ - 1;
+                                        coverStata(startRow,startColumn);
+
                                     } else {
 
                                         //先判断这个位置是否有覆盖
@@ -429,6 +418,10 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         }
 
+
+    }
+
+    private void coverStata(int startRow, int startColumn) {
 
     }
 
@@ -690,12 +683,14 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 updataTelep();
                 break;
             case R.id.bt_commit:
-                exec.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        tcpClient.send("<call," + currentTemp + ",0>");
-                    }
-                });
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tcpClient.send("<call," + currentTemp + ",0>");
+                            }
+                        }).start();
+
+
                 break;
             default:
         }
@@ -779,7 +774,6 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
     private class MyHandler extends android.os.Handler {
         private WeakReference<GreenActivity> mActivity;
 
@@ -793,15 +787,16 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 switch (msg.what) {
                     case 1:
 
-                        mDialog.setMessage("服务连接失败,重新连接")
+                        mDialog.setMessage("请检查网络后重新登录")
                                 .setTitle("提示")
                                 .setEditorText(false)
                                 .setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
                             @Override
                             public void onPositiveClick(String name) {
                                 mDialog.dismiss();
-
-                                initTCP();
+                                Intent intent = new Intent(GreenActivity.this,LoginActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
 
                             @Override
@@ -816,14 +811,14 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
     private class MyBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String mAction = intent.getAction();
             switch (mAction) {
-                case "tcpClientReceiver":
+                case "tcpClientSendFaild":
+                    LogUtils.d("TcpClient","tcpClientSendFaild");
                     Message message = Message.obtain();
                     message.what = 1;
                     myHandler.sendMessage(message);
@@ -831,6 +826,10 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tcpClient.closeSelf();
+        unregisterReceiver(myBroadcastReceiver);
+    }
 }

@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 android {
@@ -24,9 +26,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            if (variant.name.equalsIgnoreCase('release')) {
+                def df = new SimpleDateFormat("yyyyMMdd_HHmm")
+                outputFileName = "fullScreen_${df.format(new Date())}_${defaultConfig.versionName}_${defaultConfig.versionCode}.apk"
+            }else {
 
+            }
+        }
+    }
     greendao {
         schemaVersion 1 //当前数据库版本
+    }
+
+    signingConfigs {
+        config {
+            storeFile file('../screenControl.jks')
+//F:\apk_key\ivosmApp
+            keyAlias 'yunnan'
+            keyPassword '123456'
+            storePassword '123456'
+        }
     }
 
 }
@@ -44,6 +65,6 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.2' // 添加库
 //    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta2'
 
-    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
-    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+    implementation 'com.tencent.bugly:crashreport_upgrade:1.4.2'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    implementation 'com.tencent.bugly:nativecrashreport:3.7.1'
 }

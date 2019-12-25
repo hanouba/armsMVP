@@ -6,19 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".MainActivity">
+    android:background="@color/color_2f8cfe"
+    tools:context=".SplashActivity">
 
 
-    <Button
-        android:onClick="openGreen"
-        android:text="数据库版"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:onClick="openOld"
-        android:text="old"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 
 
