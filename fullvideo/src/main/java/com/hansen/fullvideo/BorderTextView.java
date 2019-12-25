@@ -8,6 +8,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.hansen.fullvideo.utils.LogUtils;
+
 /**
  * Created by yuxin on 2017/5/22.
  */
@@ -15,6 +17,10 @@ import android.widget.TextView;
 
 @SuppressLint("DrawAllocation")
 public class BorderTextView extends AppCompatTextView {
+
+    private Paint paint,mPainRect;
+    private int mcolor;
+
     public BorderTextView(Context context) {
         super(context);
     }
@@ -23,15 +29,15 @@ public class BorderTextView extends AppCompatTextView {
         super(context, attrs);
     }
 
-    private int sroke_width = 1;
+    private int sroke_width = 3;
 
     @Override
     protected void onDraw(Canvas canvas) {
 
-        Paint paint = new Paint();
+        paint = new Paint();
 
         //  将边框设为黑色
-        paint.setColor(getResources().getColor(R.color.textBorder));
+        paint.setColor(getResources().getColor(R.color.white));
 
         //  画TextView的4个边
         canvas.drawLine(0, 0, this.getWidth() - sroke_width, 0, paint);
@@ -39,6 +45,20 @@ public class BorderTextView extends AppCompatTextView {
         canvas.drawLine(this.getWidth() - sroke_width, 0, this.getWidth() - sroke_width, this.getHeight() - sroke_width, paint);
         canvas.drawLine(0, this.getHeight() - sroke_width, this.getWidth() - sroke_width, this.getHeight() - sroke_width, paint);
 
+
         super.onDraw(canvas);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        paint.setColor(getResources().getColor(mcolor));
+        canvas.drawRect(0+sroke_width,0+sroke_width,this.getWidth()-sroke_width,this.getHeight()-sroke_width, paint);
+    }
+
+    public void setBackColor(int color) {
+        mcolor = color;
+        invalidate();
     }
 }

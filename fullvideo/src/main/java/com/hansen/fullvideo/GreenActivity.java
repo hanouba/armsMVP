@@ -114,9 +114,9 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         if (hasShow == 1) {
             if (hasFocus) {
 
-                initTable();
+//                initTable(0,0);
 
-                updataTelep();
+                updataTelep(0, 0);
                 updateEditState(false);
             }
         } else {
@@ -126,11 +126,13 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * 更新界面
+     * @param startR
+     * @param startC
      */
-    private void updataTelep() {
+    private void updataTelep(int startR, int startC) {
         bigScreenBeans.clear();
         bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
-        initTable();
+        initTable(startR,startC);
         initCourse();
         //显示课表内容
         initCourseTableBody();
@@ -224,7 +226,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 bigScreenBeans = mDBHelper.searchAllByTempIndex(currentTemp);
                 //得到当前选择的预案
                 currentTempName = allTemp.get(position).getTempName();
-                updataTelep();
+                updataTelep(0, 0);
                 updateEditState(false);
                 templateAdapter.setSelected(position);
 
@@ -267,6 +269,11 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    /**
+     * list去重
+     * @param list
+     * @return
+     */
     public List repeatListWayThird(List<String> list) {
 
         TreeSet set = new TreeSet(list);
@@ -280,7 +287,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
      * 划分表格
      */
     @SuppressLint("ResourceAsColor")
-    private void initTable() {
+    private void initTable(int sRow,int sColumn) {
         rlContent.removeAllViews();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -310,6 +317,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
         for (int i = 1; i <= rowNum; i++) {
             // 遍历每列
             for (int j = 1; j <= columnNum; j++) {
+
                 final BorderTextView tx = new BorderTextView(this);
                 tx.setId((i - 1) * columnNum + j);
                 //相对布局参数
@@ -318,9 +326,17 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                         gridHeight);
                 //文字对齐方式
                 tx.setGravity(Gravity.CENTER);
-                tx.setBackgroundColor(R.color.color_f1f3f5);
+                if (i == sRow && j == sColumn+1) {
+                    tx.setText("123");
+
+                    tx.setBackColor(R.color.color_d1e3ff);
+                }else {
+                    tx.setText("333");
+                    tx.setBackColor(R.color.color_f1f3f5);
+                }
+
                 //字体样式
-                tx.setTextAppearance(this, R.style.courseTableText);
+
                 //如果是第一列
                 if (j == 1) {
                     //设置他们的相对位置
@@ -333,7 +349,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     rp.addRule(RelativeLayout.RIGHT_OF, (i - 1) * columnNum + j - 1);
                     rp.addRule(RelativeLayout.ALIGN_TOP, (i - 1) * columnNum + j - 1);
-                    tx.setText("");
+
                 }
 
                 tx.setLayoutParams(rp);
@@ -423,6 +439,8 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
     private void coverStata(int startRow, int startColumn) {
 
+        LogUtils.d("选中的位置"+startRow+"startColumn"+startColumn);
+        updataTelep(startRow,startColumn);
     }
 
     private void checkSelectLocation(int startCol, int endCol, int startR, int endR) {
@@ -482,7 +500,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
-        updataTelep();
+        updataTelep(0, 0);
     }
 
 
@@ -665,7 +683,7 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 if (editClick % 2 == 0) {
                     typeLits.clear();
                     updateEditState(false);
-                    updataTelep();
+                    updataTelep(0, 0);
 
                 } else {
                     typeLits.clear();
@@ -679,8 +697,8 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.bt_clean:
                 mDBHelper.deleteByTempType(currentTemp);
-                initTable();
-                updataTelep();
+
+                updataTelep(0, 0);
                 break;
             case R.id.bt_commit:
                         new Thread(new Runnable() {
@@ -751,8 +769,8 @@ public class GreenActivity extends AppCompatActivity implements View.OnClickList
                                     mDialog.dismiss();
                                     mDBHelper.deleteByType(type);
                                     rlContent.removeView(split);
-                                    initTable();
-                                    updataTelep();
+
+                                    updataTelep(0, 0);
                                     updateEditState(true);
                                     typeLits.clear();
                                     showEditIcon();

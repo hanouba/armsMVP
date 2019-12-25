@@ -5,6 +5,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="textBorder">#a8abad</color>
+    <color name="white">#fff</color>
 
 
     <color name="courseTable1">#FF9800</color>
@@ -17,7 +18,7 @@
     <color name="courseTable8">#8aa8fc</color>
     <color name="courseTable9">#b88449</color>
     <color name="courseTable10">#afd8dd</color>
-    <color name="color_f1f3f5">#F1F3F5</color>
+    <color name="color_f1f3f5">#DCDEE0</color>
     <color name="color_388BFD">#388BFD</color>
     <color name="color_969696">#969696</color>
     <color name="color_fafafa">#FAFAFA</color>
