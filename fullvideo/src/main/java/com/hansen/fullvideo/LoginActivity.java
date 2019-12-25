@@ -71,13 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         login.setOnClickListener(this);
         SPUtils.getInstance().put("SAVE_STATE",true);
-        cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                cbSave.setChecked(isChecked);
 
-            }
-        });
 
 
             String ip = SPUtils.getInstance().getString("IP");
@@ -120,14 +114,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean checkIp(String ip, String port) {
-        if (ip.isEmpty()) {
+        if (ip.isEmpty() || port.isEmpty()) {
         return false;
         }
 
-        if (port.isEmpty()) {
-            return false;
-        }
-        return true;
+        boolean b1 = ip.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}");
+
+        return b1;
 
     }
 

@@ -90,6 +90,7 @@
 
                 <EditText
                     android:id="@+id/et_ip"
+                    android:singleLine="true"
                     android:layout_marginLeft="68dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -112,7 +113,9 @@
 
 
                 <EditText
+
                     android:id="@+id/et_port"
+                    android:singleLine="true"
                     android:layout_marginLeft="68dp"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"/>
